@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
+import android.util.JsonReader;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,8 +13,18 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.miryor.jawn.R;
+import com.miryor.jawn.model.HourlyForecast;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,5 +89,41 @@ public class MainActivity extends AppCompatActivity {
             mNotifyMgr.notify(mNotificationId, mBuilder.build());
         }
     };
+
+    private class DownloadWeatherTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                return loadJsonFromNetwork(urls[0]);
+            }
+            catch (IOException e) {
+                return getResources().getString(R.string.connection_error);
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+        }
+    }
+
+
+    private String loadJsonFromNetwork(String url) throws IOException {
+        WundergroundWeatherJsonGrabber g = new WundergroundWeatherJsonGrabber(url);
+        WundergroundWeatherJsonParser p = new WundergroundWeatherJsonParser(g.getWeatherJsonInputStream());
+        List<HourlyForecast> list = p.parseHourlyForecast();
+        StringBuilder builder = new StringBuilder();
+        SimpleDateFormat df = new SimpleDateFormat("MM/dd HH");
+        for ( HourlyForecast hf : list ) {
+            if ( builder.length() > 0 ) builder.append( ", " );
+            builder.append( df.format(new Date(hf.getEpoch()*1000)) );
+            builder.append( " " );
+            builder.append( hf.getTempF() );
+            builder.append( "\u00B0" );
+            builder.append( " " );
+            builder.append( hf.getCondition() );
+        }
+        return builder.toString();
+    }
 
 }

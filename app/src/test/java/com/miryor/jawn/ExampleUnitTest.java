@@ -1,4 +1,4 @@
-package com.miryor.jawa;
+package com.miryor.jawn;
 
 import org.junit.Test;
 

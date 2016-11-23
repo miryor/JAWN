@@ -9,7 +9,7 @@ import android.app.Activity;
 public class NetworkActivity extends Activity {
     public static final String WIFI = "Wi-Fi";
     public static final String ANY = "Any";
-    private static final String URL = "http://api.wunderground.com/api/502f7c0bd4a4257d/forecast/q/CA/San_Francisco.json";
+    private static final String URL = "http://api.wunderground.com/api/502f7c0bd4a4257d/hourly/q/CA/San_Francisco.json";
 
     private static boolean wifiConnected = false;
     private static boolean mobileConnected = false;
