@@ -5,6 +5,7 @@ import com.miryor.jawn.model.HourlyForecast;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.InputStreamReader;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -20,6 +21,7 @@ public class WundergroundJsonParserTest {
         MockWundergroundJsonGrabber g = new MockWundergroundJsonGrabber();
         WundergroundWeatherJsonParser p = new WundergroundWeatherJsonParser(g.getWeatherJsonInputStream());
         List<HourlyForecast> list = p.parseHourlyForecast();
+        assertEquals( list.size(), 36 );
         HourlyForecast hf = list.get(0);
         assertEquals(hf.getMonth(), 11);
     }

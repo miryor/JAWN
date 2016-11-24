@@ -1,12 +1,14 @@
 package com.miryor.jawn;
 
 import android.util.JsonReader;
+import android.util.Log;
 
 import com.miryor.jawn.model.HourlyForecast;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +26,13 @@ public class WundergroundWeatherJsonParser implements WeatherJsonParser {
         JsonReader reader = null;
         try {
             reader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
+            //String s = new String( "{ \"blah\": \"value\" }" );
+            //reader = new JsonReader( new StringReader( s ) );
+
             reader.beginObject();
             while ( reader.hasNext() ) {
                 String name = reader.nextName();
+                Log.d( "JAWN", "found " + name );
                 if (name.equals("hourly_forecast")) {
                     reader.beginArray();
                     while(reader.hasNext()) {
@@ -34,8 +40,12 @@ public class WundergroundWeatherJsonParser implements WeatherJsonParser {
                     }
                     reader.endArray();
                 }
+                else {
+                    reader.skipValue();
+                }
             }
             reader.endObject();
+            Log.d( "JAWN", "done" );
         }
         finally {
             if ( reader != null ) reader.close();
@@ -63,6 +73,9 @@ public class WundergroundWeatherJsonParser implements WeatherJsonParser {
             }
             else if ( name.equals("feelslike") ) {
                 parseFeelsLike(reader,builder);
+            }
+            else {
+                reader.skipValue();
             }
         }
         reader.endObject();
@@ -103,6 +116,9 @@ public class WundergroundWeatherJsonParser implements WeatherJsonParser {
             else if ( name.equals("epoch") ) {
                 builder.setEpoch( reader.nextLong() );
             }
+            else {
+                reader.skipValue();
+            }
 
 
         }
@@ -119,6 +135,9 @@ public class WundergroundWeatherJsonParser implements WeatherJsonParser {
             else if ( name.equals("metric" ) ) {
                 builder.setTempM(Integer.parseInt(reader.nextString()));
             }
+            else {
+                reader.skipValue();
+            }
         }
         reader.endObject();
 
@@ -133,6 +152,9 @@ public class WundergroundWeatherJsonParser implements WeatherJsonParser {
             }
             else if ( name.equals("metric" ) ) {
                 builder.setFeelsLikeM(Integer.parseInt(reader.nextString()));
+            }
+            else {
+                reader.skipValue();
             }
         }
         reader.endObject();
