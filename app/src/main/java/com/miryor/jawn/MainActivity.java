@@ -1,6 +1,7 @@
 package com.miryor.jawn;
 
 import android.app.NotificationManager;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private static String EMOJI_CLOUD_RAIN = "\uD83C\uDF27";
     private static String EMOJI_SUN_BEHIND_RAIN_CLOUD = "\uD83C\uDF26";
     */
+    private static final String URL = "http://api.wunderground.com/api/502f7c0bd4a4257d/hourly/q/CA/San_Francisco.json";
 
     static final String[] PENS = new String[]{
             "MONT Blanc",
@@ -71,26 +73,18 @@ public class MainActivity extends AppCompatActivity {
             Object o = parent.getItemAtPosition(position);
             String pen = o.toString();
 
-            Toast.makeText(parent.getContext(), "You have chosen the pen: " + pen, Toast.LENGTH_LONG).show();
+            // Toast.makeText(parent.getContext(), "You have chosen the pen: " + pen, Toast.LENGTH_LONG).show();
+        new DownloadWeatherTask(parent.getContext()).execute(URL);
 
-            NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(parent.getContext());
-            mBuilder
-                .setSmallIcon(R.drawable.ic_wb_sunny_black_24dp)
-                .setContentTitle("My notification")
-                .setContentText(pen);
 
-            // Sets an ID for the notification
-            int mNotificationId = 001;
-            // Gets an instance of the NotificationManager service
-            NotificationManager mNotifyMgr =
-                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            // Builds the notification and issues it.
-            mNotifyMgr.notify(mNotificationId, mBuilder.build());
         }
     };
 
     private class DownloadWeatherTask extends AsyncTask<String, Void, String> {
+        Context context;
+        private DownloadWeatherTask( Context context ) {
+            this.context = context;
+        }
 
         @Override
         protected String doInBackground(String... urls) {
@@ -104,6 +98,20 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(context);
+            mBuilder
+                    .setSmallIcon(R.drawable.ic_wb_sunny_black_24dp)
+                    .setContentTitle("My notification")
+                    .setContentText(result);
+
+            // Sets an ID for the notification
+            int mNotificationId = 001;
+            // Gets an instance of the NotificationManager service
+            NotificationManager mNotifyMgr =
+                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            // Builds the notification and issues it.
+            mNotifyMgr.notify(mNotificationId, mBuilder.build());
         }
     }
 

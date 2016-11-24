@@ -18,6 +18,5 @@ public class NetworkActivity extends Activity {
     public static String sPref = null;
 
     public void getWeather() {
-
     }
 }
