@@ -7,14 +7,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
 import android.util.JsonReader;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.miryor.jawn.R;
 import com.miryor.jawn.model.HourlyForecast;
+import com.miryor.jawn.model.Notifier;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +27,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -61,8 +67,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, PENS);
+        List<Notifier> list = new ArrayList<Notifier>();
+        list.add( new Notifier(1, "12345", 1, 1200, true) );
+        list.add( new Notifier(2, "11233", 1, 1200, true) );
+
+        NotifierArrayAdapter adapter = new NotifierArrayAdapter(this, R.layout.notifier_row, list);
+
+        /*ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, PENS);*/
+
         ListView listView = (ListView) findViewById(R.id.list_notifications);
         listView.setOnItemClickListener(listNotificationsClickListener);
         listView.setAdapter(adapter);
@@ -70,10 +83,11 @@ public class MainActivity extends AppCompatActivity {
 
     private AdapterView.OnItemClickListener listNotificationsClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView parent, View v, int position, long id) {
-            Object o = parent.getItemAtPosition(position);
-            String pen = o.toString();
+        Object o = parent.getItemAtPosition(position);
+        String pen = o.toString();
 
-            // Toast.makeText(parent.getContext(), "You have chosen the pen: " + pen, Toast.LENGTH_LONG).show();
+        Toast.makeText(parent.getContext(), "You have chosen the pen: " + pen, Toast.LENGTH_LONG).show();
+
         new DownloadWeatherTask(parent.getContext()).execute(URL);
 
 
@@ -133,5 +147,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return builder.toString();
     }
+
 
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+    <CheckBox android:id="@+id/notifier_enabled"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_gravity="center_vertical" />
+    <TextView android:id="@+id/notifier_daysofweek"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Days of Week"
+        android:layout_weight="0.21"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical" />
+    <TextView android:id="@+id/notifier_time"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Time"
+        android:layout_weight="0.37"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical" />
+    <TextView android:id="@+id/notifier_postalcode"
+        android:layout_width="110dp"
+        android:layout_height="match_parent"
+        android:text="Postal Code"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical" />
+
+</LinearLayout>
