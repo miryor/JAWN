@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <CheckBox android:id="@+id/notifier_daysofweek_sunday"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/label_dayofweek_sunday"
+        android:onClick="onDayOfWeekClicked"
+        />
+
+    <CheckBox android:id="@+id/notifier_daysofweek_monday"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/label_dayofweek_monday"
+        android:onClick="onDayOfWeekClicked"
+        />
+
+    <CheckBox android:id="@+id/notifier_daysofweek_tuesday"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/label_dayofweek_tuesday"
+        android:onClick="onDayOfWeekClicked"
+        />
+
+    <CheckBox android:id="@+id/notifier_daysofweek_wednesday"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/label_dayofweek_wednesday"
+        android:onClick="onDayOfWeekClicked"
+        />
+
+    <CheckBox android:id="@+id/notifier_daysofweek_thursday"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/label_dayofweek_thursday"
+        android:onClick="onDayOfWeekClicked"
+        />
+
+    <CheckBox android:id="@+id/notifier_daysofweek_friday"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/label_dayofweek_friday"
+        android:onClick="onDayOfWeekClicked"
+        />
+
+    <CheckBox android:id="@+id/notifier_daysofweek_saturday"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/label_dayofweek_saturday"
+        android:onClick="onDayOfWeekClicked"
+        />
+
+</LinearLayout>

@@ -2,35 +2,23 @@ package com.miryor.jawn;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
-import android.util.JsonReader;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.miryor.jawn.R;
 import com.miryor.jawn.model.HourlyForecast;
 import com.miryor.jawn.model.Notifier;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -79,6 +67,11 @@ public class MainActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.list_notifications);
         listView.setOnItemClickListener(listNotificationsClickListener);
         listView.setAdapter(adapter);
+    }
+
+    public void addNotification(View view) {
+        Intent intent = new Intent(this, AddNotifierActivity.class);
+        startActivity(intent);
     }
 
     private AdapterView.OnItemClickListener listNotificationsClickListener = new AdapterView.OnItemClickListener() {

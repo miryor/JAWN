@@ -1,5 +1,18 @@
 <resources>
     <string name="app_name">JAWN</string>
     <string name="button_add_notification">Add Notification</string>
+    <string name="activity_add_notification">Add Notification</string>
+    <string name="pick_time">Pick Time</string>
     <string name="connection_error">Problem downloading weather</string>
+    <string name="label_postalcode">Zip Code</string>
+    <string name="label_time">Time</string>
+    <string name="label_day_of_week">Days of Week</string>
+    <string name="label_dayofweek_sunday">Sunday</string>
+    <string name="label_dayofweek_monday">Monday</string>
+    <string name="label_dayofweek_tuesday">Tuesday</string>
+    <string name="label_dayofweek_wednesday">Wednesday</string>
+    <string name="label_dayofweek_thursday">Thursday</string>
+    <string name="label_dayofweek_friday">Friday</string>
+    <string name="label_dayofweek_saturday">Saturday</string>
+
 </resources>
