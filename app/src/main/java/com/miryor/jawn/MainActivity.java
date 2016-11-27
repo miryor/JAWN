@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -60,9 +61,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        List<Notifier> list = new ArrayList<Notifier>();
-        list.add( new Notifier(1, "12345", 1, 1200, true) );
-        list.add( new Notifier(2, "11233", 1, 1200, true) );
+        List<Notifier> list = JawnContract.listNotifiers(this);
+
+        /*List<Notifier> list = new ArrayList<Notifier>();
+        list.add( new Notifier(1, "12345", 1, 12, 0, true) );
+        list.add( new Notifier(2, "11233", 1, 12, 0, true) );*/
 
         NotifierArrayAdapter adapter = new NotifierArrayAdapter(this, R.layout.notifier_row, list);
 
@@ -72,11 +75,29 @@ public class MainActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.list_notifications);
         listView.setOnItemClickListener(listNotificationsClickListener);
         listView.setAdapter(adapter);
+
+        Toast.makeText(this, "toast onCreate", Toast.LENGTH_LONG).show();
+
     }
 
     public void addNotification(View view) {
         Intent intent = new Intent(this, AddNotifierActivity.class);
-        startActivity(intent);
+        intent.putExtra( Notifier.EXTRA_NAME, new Notifier(0L, "", 0, 0, 0, true) );
+        startActivityForResult(intent, Notifier.RESULT_SAVED);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("JAWN", "onActivityResult " + resultCode );
+        Toast.makeText(this, "toast " + resultCode, Toast.LENGTH_LONG).show();
+        if ( resultCode == Notifier.RESULT_SAVED ) {
+            Notifier n = (Notifier) data.getParcelableExtra( Notifier.EXTRA_NAME );
+            Toast.makeText(this, "Saved " + n.getPostalCode(), Toast.LENGTH_LONG).show();
+        }
+        else {
+            Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+        }
     }
 
     private AdapterView.OnItemClickListener listNotificationsClickListener = new AdapterView.OnItemClickListener() {

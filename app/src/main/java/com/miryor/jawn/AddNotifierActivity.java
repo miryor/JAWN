@@ -27,36 +27,47 @@ public class AddNotifierActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_notifier);
 
         Intent intent = getIntent();
-        Notifier n = intent.getParcelableExtra("notifier");
+        Notifier n = (Notifier) intent.getParcelableExtra(Notifier.EXTRA_NAME);
         if ( n != null ) {
             notifier = n;
         }
         else {
-            notifier = new Notifier( 0, "", 0, 0, true );
+            notifier = new Notifier( 0L, "", 0, 0, 0, true );
+        }
+        if ( notifier.getId() > 0L ) {
             CheckBox cb = (CheckBox) findViewById(R.id.notifier_enabled);
             cb.setVisibility(View.VISIBLE);
+            Toast.makeText(this, notifier.getPostalCode(), Toast.LENGTH_LONG).show();
         }
-        Toast.makeText(this, n.getPostalCode(), Toast.LENGTH_LONG).show();
-
-
-        // TODO: need to figure out how we want to handle time storing and formatting
 
     }
 
     public void showTimePickerDialog(View view) {
-        Calendar mcurrentTime = Calendar.getInstance();
-        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        int minute = mcurrentTime.get(Calendar.MINUTE);
+        final Notifier n = notifier;
         TimePickerDialog mTimePicker;
         mTimePicker = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 TextView time = (TextView) findViewById(R.id.notifier_time);
                 time.setText( selectedHour + ":" + selectedMinute);
+                n.setHour(selectedHour);
+                n.setMinute(selectedMinute);
             }
-        }, hour, minute, true);
+        }, notifier.getHour(), notifier.getMinute(), true);
         mTimePicker.setTitle("Select Time");
         mTimePicker.show();
+    }
+
+    public void cancelNotifier(View view) {
+        setResult(Notifier.RESULT_CANCELLED);
+        finish();
+    }
+
+    public void saveNotifier(View view) {
+        Intent intent = new Intent();
+        intent.putExtra( Notifier.EXTRA_NAME, notifier );
+        setResult(Notifier.RESULT_SAVED, intent);
+        finish();
     }
 
     public void onDayOfWeekClicked(View view) {

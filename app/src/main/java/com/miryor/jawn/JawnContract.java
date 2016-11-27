@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.provider.BaseColumns;
 
 import com.miryor.jawn.model.Notifier;
@@ -24,7 +25,8 @@ public class JawnContract {
 
     public static class JawnNotifier implements BaseColumns {
         public static final String TABLE_NAME = "notifier";
-        public static final String COLUMN_NAME_TIME = "time";
+        public static final String COLUMN_NAME_HOUR = "hour";
+        public static final String COLUMN_NAME_MINUTE = "minute";
         public static final String COLUMN_NAME_POSTALCODE = "postal_code";
         public static final String COLUMN_NAME_DAYSOFWEEK = "days_of_week";
         public static final String COLUMN_NAME_ENABLED = "enabled";
@@ -44,7 +46,8 @@ public class JawnContract {
                 JawnNotifier._ID + " INTEGER PRIMARY KEY," +
                 JawnNotifier.COLUMN_NAME_POSTALCODE + " TEXT," +
                 JawnNotifier.COLUMN_NAME_DAYSOFWEEK + " INTEGER," +
-                JawnNotifier.COLUMN_NAME_TIME + " INTEGER," +
+                JawnNotifier.COLUMN_NAME_HOUR + " INTEGER," +
+                JawnNotifier.COLUMN_NAME_MINUTE + " INTEGER," +
                 JawnNotifier.COLUMN_NAME_ENABLED + " INTEGER )";
 
         public JawnNotifierDbHelper(Context context) {
@@ -61,6 +64,14 @@ public class JawnContract {
         }
     }
 
+    public static String formatTime( int hour, int minute ) {
+        String paddedHour = Integer.toString(hour);
+        String paddedMinute = Integer.toString(minute);
+        if ( paddedHour.length() == 1 ) paddedHour = "0" + paddedHour;
+        if ( paddedMinute.length() == 1 ) paddedMinute = "0" + paddedMinute;
+        return paddedHour + ":" + paddedMinute;
+    }
+
     public static void reset(Context context) {
         JawnNotifierDbHelper dbHelper = new JawnNotifierDbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -68,13 +79,35 @@ public class JawnContract {
         dbHelper.onCreate(db);
     }
 
+    private static long getMaxId(Context context) {
+        JawnNotifierDbHelper dbHelper = new JawnNotifierDbHelper(context);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        final SQLiteStatement stmt = db
+                .compileStatement("SELECT MAX(_ID) FROM " + JawnNotifier.TABLE_NAME);
+
+        return (long) stmt.simpleQueryForLong();
+    }
+
+    public static long saveNotifier(Context context, Notifier n) {
+        if (n.getId() > 0L) {
+            return 0L;
+        }
+        else {
+            return insertNotifier(context,n);
+        }
+    }
+
     public static long insertNotifier(Context context, Notifier n) {
+        long max = getMaxId(context);
+
         JawnNotifierDbHelper dbHelper = new JawnNotifierDbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(JawnNotifier._ID, max+1);
         values.put(JawnNotifier.COLUMN_NAME_POSTALCODE, n.getPostalCode());
         values.put(JawnNotifier.COLUMN_NAME_DAYSOFWEEK, n.getDaysOfWeek());
-        values.put(JawnNotifier.COLUMN_NAME_TIME, n.getTime());
+        values.put(JawnNotifier.COLUMN_NAME_HOUR, n.getHour());
+        values.put(JawnNotifier.COLUMN_NAME_MINUTE, n.getMinute());
         values.put(JawnNotifier.COLUMN_NAME_ENABLED, new Integer(1));
 
         long rowId = db.insert(JawnNotifier.TABLE_NAME, null, values);
@@ -96,7 +129,8 @@ public class JawnContract {
                 JawnNotifier._ID,
                 JawnNotifier.COLUMN_NAME_POSTALCODE,
                 JawnNotifier.COLUMN_NAME_DAYSOFWEEK,
-                JawnNotifier.COLUMN_NAME_TIME,
+                JawnNotifier.COLUMN_NAME_HOUR,
+                JawnNotifier.COLUMN_NAME_MINUTE,
                 JawnNotifier.COLUMN_NAME_ENABLED
         };
         Cursor c = db.query(JawnNotifier.TABLE_NAME,
@@ -113,9 +147,10 @@ public class JawnContract {
                 int id = c.getInt(c.getColumnIndex(JawnNotifier._ID));
                 String postalCode = c.getString(c.getColumnIndex(JawnNotifier.COLUMN_NAME_POSTALCODE));
                 int daysOfWeek = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_DAYSOFWEEK));
-                int time = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_TIME));
+                int hour = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_HOUR));
+                int minute = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_MINUTE));
                 int enabled = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_ENABLED));
-                list.add( new Notifier(id, postalCode, daysOfWeek, time, ((enabled==1) ? true:false) ) );
+                list.add( new Notifier(id, postalCode, daysOfWeek, hour, minute, ((enabled==1) ? true:false) ) );
             } while (c.moveToNext());
         }
         c.close();

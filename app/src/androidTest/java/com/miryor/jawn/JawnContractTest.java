@@ -1,6 +1,7 @@
 package com.miryor.jawn;
 
 import android.support.test.InstrumentationRegistry;
+import android.util.Log;
 
 import com.miryor.jawn.model.Notifier;
 
@@ -27,8 +28,9 @@ public class JawnContractTest {
 
     @Test
     public void testInsert() {
-        Notifier n = new Notifier( 0, "11233", 1, 1000, true );
+        Notifier n = new Notifier( 0, "11233", 1, 10, 0, true );
         long id = JawnContract.insertNotifier(InstrumentationRegistry.getTargetContext(), n);
+        Log.d("JAWN", "Inserted id: " + id);
         List<Notifier> list = JawnContract.listNotifiers(InstrumentationRegistry.getTargetContext());
         assertEquals( 1, list.size() );
         JawnContract.deleteNotifier(InstrumentationRegistry.getTargetContext(), id);

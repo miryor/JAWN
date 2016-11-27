@@ -50,13 +50,18 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
     public View getView(final int position, View convertView, ViewGroup parent) {
         View row = convertView;
         ViewHolder holder = null;
+        Notifier n = list.get(position);
 
         if ( row == null ) {
             LayoutInflater inflator = ((Activity) context).getLayoutInflater();
             row = inflator.inflate(layoutResourceId, parent, false);
+            CheckBox enabled = (CheckBox) row.findViewById(R.id.notifier_enabled);
+            TextView daysOfWeek = (TextView) row.findViewById(R.id.notifier_daysofweek);
+            TextView time = (TextView) row.findViewById(R.id.notifier_time);
+            TextView postalCode = (TextView) (TextView) row.findViewById(R.id.notifier_postalcode);
 
             holder = new ViewHolder();
-            holder.enabled = (CheckBox) row.findViewById(R.id.notifier_enabled);
+            holder.enabled = enabled;
             holder.enabled.setTag(position);
             holder.enabled.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -66,35 +71,35 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
                     Toast.makeText(context, "Checkbox from row " + position + " was checked", Toast.LENGTH_LONG).show();
                 }
             });
-            holder.daysOfWeek = (TextView) row.findViewById(R.id.notifier_daysofweek);
+            holder.daysOfWeek = daysOfWeek;
             holder.daysOfWeek.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, AddNotifierActivity.class);
-                    intent.putExtra( "notifier", list.get(position) );
-                    context.startActivity(intent);
+                    intent.putExtra( Notifier.EXTRA_NAME, list.get(position) );
+                    ((Activity) context).startActivityForResult(intent, Notifier.RESULT_SAVED);
                     /*TextView view = (TextView) v;
                     Toast.makeText(context, "Days of Week from row " + position + " was pressed: " + view.getText(), Toast.LENGTH_LONG).show();*/
                 }
             });
-            holder.time = (TextView) row.findViewById(R.id.notifier_time);
+            holder.time = time;
             holder.time.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, AddNotifierActivity.class);
-                    intent.putExtra( "notifier", list.get(position) );
-                    context.startActivity(intent);
+                    intent.putExtra( Notifier.EXTRA_NAME, list.get(position) );
+                    ((Activity) context).startActivityForResult(intent, Notifier.RESULT_SAVED);
                     /*TextView view = (TextView) v;
                     Toast.makeText(context, "Time from row " + position + " was pressed: " + view.getText(), Toast.LENGTH_LONG).show();*/
                 }
             });
-            holder.postalCode = (TextView) row.findViewById(R.id.notifier_postalcode);
+            holder.postalCode = postalCode;
             holder.postalCode.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, AddNotifierActivity.class);
-                    intent.putExtra( "notifier", list.get(position) );
-                    context.startActivity(intent);
+                    intent.putExtra( Notifier.EXTRA_NAME, list.get(position) );
+                    ((Activity) context).startActivityForResult(intent, Notifier.RESULT_SAVED);
                     /*TextView view = (TextView) v;
                     Toast.makeText(context, "Postal Code from row " + position + " was pressed: " + view.getText(), Toast.LENGTH_LONG).show();*/
                 }
@@ -108,7 +113,7 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
 
         holder.enabled.setEnabled(list.get(position).isEnabled());
         holder.daysOfWeek.setText(Integer.toString(list.get(position).getDaysOfWeek()));
-        holder.time.setText(Integer.toString(list.get(position).getTime()));
+        holder.time.setText( JawnContract.formatTime( n.getHour(), n.getMinute() ) );
         holder.postalCode.setText(list.get(position).getPostalCode());
 
         return row;

@@ -11,14 +11,21 @@ public class Notifier implements Parcelable {
     private long id;
     private String postalCode;
     private int daysOfWeek;
-    private int time;
+    private int hour;
+    private int minute;
+
     private boolean enabled;
 
-    public Notifier(long id, String postalCode, int daysOfWeek, int time, boolean enabled) {
+    public static String EXTRA_NAME = "notifier";
+    public static int RESULT_SAVED = 100;
+    public static int RESULT_CANCELLED = 200;
+
+    public Notifier(long id, String postalCode, int daysOfWeek, int hour, int minute, boolean enabled) {
         this.id = id;
         this.postalCode = postalCode;
         this.daysOfWeek = daysOfWeek;
-        this.time = time;
+        this.hour = hour;
+        this.minute = minute;
         this.enabled = enabled;
     }
 
@@ -46,12 +53,20 @@ public class Notifier implements Parcelable {
         this.daysOfWeek = daysOfWeek;
     }
 
-    public int getTime() {
-        return time;
+    public int getHour() {
+        return hour;
     }
 
-    public void setTime(int time) {
-        this.time = time;
+    public void setHour(int hour) {
+        this.hour = hour;
+    }
+
+    public int getMinute() {
+        return minute;
+    }
+
+    public void setMinute(int minute) {
+        this.minute = minute;
     }
 
     public boolean isEnabled() {
@@ -72,7 +87,8 @@ public class Notifier implements Parcelable {
         dest.writeLong(id);
         dest.writeString(postalCode);
         dest.writeInt(daysOfWeek);
-        dest.writeInt(time);
+        dest.writeInt(hour);
+        dest.writeInt(minute);
         dest.writeInt( (enabled) ? 1 : 0 );
     }
 
@@ -90,7 +106,8 @@ public class Notifier implements Parcelable {
         id = in.readLong();
         postalCode = in.readString();
         daysOfWeek = in.readInt();
-        time = in.readInt();
+        hour = in.readInt();
+        minute = in.readInt();
         enabled = ( (in.readInt() == 1) ? true : false );
     }
 }
