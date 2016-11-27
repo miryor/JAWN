@@ -2,6 +2,7 @@ package com.miryor.jawn;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -69,24 +70,33 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
             holder.daysOfWeek.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TextView view = (TextView) v;
-                    Toast.makeText(context, "Days of Week from row " + position + " was pressed: " + view.getText(), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(context, AddNotifierActivity.class);
+                    intent.putExtra( "notifier", list.get(position) );
+                    context.startActivity(intent);
+                    /*TextView view = (TextView) v;
+                    Toast.makeText(context, "Days of Week from row " + position + " was pressed: " + view.getText(), Toast.LENGTH_LONG).show();*/
                 }
             });
             holder.time = (TextView) row.findViewById(R.id.notifier_time);
             holder.time.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TextView view = (TextView) v;
-                    Toast.makeText(context, "Time from row " + position + " was pressed: " + view.getText(), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(context, AddNotifierActivity.class);
+                    intent.putExtra( "notifier", list.get(position) );
+                    context.startActivity(intent);
+                    /*TextView view = (TextView) v;
+                    Toast.makeText(context, "Time from row " + position + " was pressed: " + view.getText(), Toast.LENGTH_LONG).show();*/
                 }
             });
             holder.postalCode = (TextView) row.findViewById(R.id.notifier_postalcode);
             holder.postalCode.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TextView view = (TextView) v;
-                    Toast.makeText(context, "Postal Code from row " + position + " was pressed: " + view.getText(), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(context, AddNotifierActivity.class);
+                    intent.putExtra( "notifier", list.get(position) );
+                    context.startActivity(intent);
+                    /*TextView view = (TextView) v;
+                    Toast.makeText(context, "Postal Code from row " + position + " was pressed: " + view.getText(), Toast.LENGTH_LONG).show();*/
                 }
             });
 

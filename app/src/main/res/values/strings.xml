@@ -14,5 +14,6 @@
     <string name="label_dayofweek_thursday">Thursday</string>
     <string name="label_dayofweek_friday">Friday</string>
     <string name="label_dayofweek_saturday">Saturday</string>
+    <string name="label_enabled">Enabled</string>
 
 </resources>

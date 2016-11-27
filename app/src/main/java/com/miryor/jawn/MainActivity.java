@@ -21,6 +21,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ *
+ * To read:
+ * http://stackoverflow.com/questions/8999375/cancel-alarm-manager-pending-intent-according-to-uniqueid-android
+ */
 public class MainActivity extends AppCompatActivity {
 
     private static String EMOJI_SUN = "\u2600";
