@@ -29,10 +29,15 @@ public class JawnContractTest {
     @Test
     public void testInsert() {
         Notifier n = new Notifier( 0, "11233", 1, 10, 0, true );
-        long id = JawnContract.insertNotifier(InstrumentationRegistry.getTargetContext(), n);
+        long id = JawnContract.saveNotifier(InstrumentationRegistry.getTargetContext(), n);
         Log.d("JAWN", "Inserted id: " + id);
         List<Notifier> list = JawnContract.listNotifiers(InstrumentationRegistry.getTargetContext());
         assertEquals( 1, list.size() );
+        n = list.get(0);
+        n.setPostalCode("12345");
+        JawnContract.saveNotifier(InstrumentationRegistry.getTargetContext(),n);
+        n = JawnContract.getNotifier(InstrumentationRegistry.getTargetContext(), n.getId() );
+        assertEquals( "12345", n.getPostalCode() );
         JawnContract.deleteNotifier(InstrumentationRegistry.getTargetContext(), id);
         list = JawnContract.listNotifiers(InstrumentationRegistry.getTargetContext());
         assertEquals( 0, list.size() );

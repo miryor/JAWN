@@ -13,6 +13,14 @@
     android:stretchColumns="1">
 
     <TableRow>
+        <FrameLayout></FrameLayout>
+        <CheckBox android:id="@+id/notifier_enabled"
+            android:layout_width="match_parent"
+            android:text="@string/label_enabled"
+            android:visibility="invisible"/>
+    </TableRow>
+
+    <TableRow>
         <TextView android:id="@+id/label_postalcode"
             android:layout_width="wrap_content"
             android:text="@string/label_postalcode"
@@ -51,14 +59,6 @@
             android:gravity="center"
             />
         <include layout="@layout/day_of_week" />
-    </TableRow>
-
-    <TableRow>
-        <FrameLayout></FrameLayout>
-        <CheckBox android:id="@+id/notifier_enabled"
-            android:layout_width="match_parent"
-            android:text="@string/label_enabled"
-            android:visibility="invisible"/>
     </TableRow>
 
     <TableRow>

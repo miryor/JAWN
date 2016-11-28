@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
     */
     private static final String URL = "http://api.wunderground.com/api/502f7c0bd4a4257d/hourly/q/CA/San_Francisco.json";
 
+    private static List<Notifier> notifierList = null;
+    private static NotifierArrayAdapter adapter = null;
+
     static final String[] PENS = new String[]{
             "MONT Blanc",
             "Gucci ",
@@ -61,13 +64,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        List<Notifier> list = JawnContract.listNotifiers(this);
+        notifierList = JawnContract.listNotifiers(this);
 
         /*List<Notifier> list = new ArrayList<Notifier>();
         list.add( new Notifier(1, "12345", 1, 12, 0, true) );
         list.add( new Notifier(2, "11233", 1, 12, 0, true) );*/
 
-        NotifierArrayAdapter adapter = new NotifierArrayAdapter(this, R.layout.notifier_row, list);
+
+        adapter = new NotifierArrayAdapter(this, R.layout.notifier_row, notifierList);
 
         /*ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, PENS);*/
@@ -92,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d("JAWN", "onActivityResult " + resultCode );
         Toast.makeText(this, "toast " + resultCode, Toast.LENGTH_LONG).show();
         if ( resultCode == Notifier.RESULT_SAVED ) {
+            adapter.clear();
+            adapter.addAll( JawnContract.listNotifiers(this) );
+            adapter.notifyDataSetChanged();
             Notifier n = (Notifier) data.getParcelableExtra( Notifier.EXTRA_NAME );
             Toast.makeText(this, "Saved " + n.getPostalCode(), Toast.LENGTH_LONG).show();
         }

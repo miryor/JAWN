@@ -90,7 +90,8 @@ public class JawnContract {
 
     public static long saveNotifier(Context context, Notifier n) {
         if (n.getId() > 0L) {
-            return 0L;
+            int count = updateNotifier(context, n);
+            return n.getId();
         }
         else {
             return insertNotifier(context,n);
@@ -112,6 +113,26 @@ public class JawnContract {
 
         long rowId = db.insert(JawnNotifier.TABLE_NAME, null, values);
         return rowId;
+    }
+
+    public static int updateNotifier(Context context, Notifier n) {
+        JawnNotifierDbHelper dbHelper = new JawnNotifierDbHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(JawnNotifier.COLUMN_NAME_POSTALCODE, n.getPostalCode());
+        values.put(JawnNotifier.COLUMN_NAME_DAYSOFWEEK, n.getDaysOfWeek());
+        values.put(JawnNotifier.COLUMN_NAME_HOUR, n.getHour());
+        values.put(JawnNotifier.COLUMN_NAME_MINUTE, n.getMinute());
+        values.put(JawnNotifier.COLUMN_NAME_ENABLED, new Integer(1));
+
+        String selection = JawnNotifier._ID + " = ?";
+        String[] selectionArgs = { Long.toString( n.getId() ) };
+
+        return db.update(
+                JawnNotifier.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
     }
 
     public static void deleteNotifier(Context context, long id) {
@@ -156,5 +177,43 @@ public class JawnContract {
         c.close();
 
         return list;
+    }
+
+    public static Notifier getNotifier(Context context, long id) {
+        JawnNotifierDbHelper dbHelper = new JawnNotifierDbHelper(context);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String[] projection = {
+                JawnNotifier._ID,
+                JawnNotifier.COLUMN_NAME_POSTALCODE,
+                JawnNotifier.COLUMN_NAME_DAYSOFWEEK,
+                JawnNotifier.COLUMN_NAME_HOUR,
+                JawnNotifier.COLUMN_NAME_MINUTE,
+                JawnNotifier.COLUMN_NAME_ENABLED
+        };
+        String selection = JawnNotifier._ID + " = ?";
+        String[] selectionArgs = { Long.toString(id) };
+        Cursor c = db.query(JawnNotifier.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        Notifier n = null;
+        if (c.moveToFirst()) {
+            do {
+                id = c.getInt(c.getColumnIndex(JawnNotifier._ID));
+                String postalCode = c.getString(c.getColumnIndex(JawnNotifier.COLUMN_NAME_POSTALCODE));
+                int daysOfWeek = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_DAYSOFWEEK));
+                int hour = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_HOUR));
+                int minute = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_MINUTE));
+                int enabled = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_ENABLED));
+                n = new Notifier(id, postalCode, daysOfWeek, hour, minute, ((enabled==1) ? true:false) );
+            } while (c.moveToNext());
+        }
+        c.close();
+
+        return n;
     }
 }

@@ -37,6 +37,12 @@ public class AddNotifierActivity extends AppCompatActivity {
         if ( notifier.getId() > 0L ) {
             CheckBox cb = (CheckBox) findViewById(R.id.notifier_enabled);
             cb.setVisibility(View.VISIBLE);
+            cb.setChecked( n.isEnabled() );
+            // TODO: fill in sunday - saturday
+            TextView time = (TextView) findViewById(R.id.notifier_time);
+            time.setText( JawnContract.formatTime( n.getHour(), n.getMinute() ) );
+            TextView postalCode = (TextView) findViewById(R.id.notifier_postalcode);
+            postalCode.setText( n.getPostalCode() );
             Toast.makeText(this, notifier.getPostalCode(), Toast.LENGTH_LONG).show();
         }
 
@@ -64,6 +70,9 @@ public class AddNotifierActivity extends AppCompatActivity {
     }
 
     public void saveNotifier(View view) {
+        notifier.setPostalCode( ((TextView) findViewById(R.id.notifier_postalcode) ).getText().toString() );
+        long id = JawnContract.saveNotifier( this, notifier );
+        notifier.setId(id);
         Intent intent = new Intent();
         intent.putExtra( Notifier.EXTRA_NAME, notifier );
         setResult(Notifier.RESULT_SAVED, intent);
