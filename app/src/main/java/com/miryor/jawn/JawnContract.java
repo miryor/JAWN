@@ -23,6 +23,17 @@ public class JawnContract {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "JAWN.db";
 
+    public static final int DOW_SUNDAY = 1;
+    public static final int DOW_MONDAY = 2;
+    public static final int DOW_TUESDAY = 4;
+    public static final int DOW_WEDNESDAY = 8;
+    public static final int DOW_THURSDAY = 16;
+    public static final int DOW_FRIDAY = 32;
+    public static final int DOW_SATURDAY = 64;
+
+    public static final String DOW_ENABLED_COLOR = "#00ff00";
+    public static final String DOW_DISABLED_COLOR = "#ff0000";
+
     public static class JawnNotifier implements BaseColumns {
         public static final String TABLE_NAME = "notifier";
         public static final String COLUMN_NAME_HOUR = "hour";
@@ -30,14 +41,6 @@ public class JawnContract {
         public static final String COLUMN_NAME_POSTALCODE = "postal_code";
         public static final String COLUMN_NAME_DAYSOFWEEK = "days_of_week";
         public static final String COLUMN_NAME_ENABLED = "enabled";
-
-        public static final int DOW_SUNDAY = 1;
-        public static final int DOW_MONDAY = 2;
-        public static final int DOW_TUESDAY = 4;
-        public static final int DOW_WEDNESDAY = 8;
-        public static final int DOW_THURSDAY = 16;
-        public static final int DOW_FRIDAY = 32;
-        public static final int DOW_SATURDAY = 64;
     }
 
     public static class JawnNotifierDbHelper extends SQLiteOpenHelper {
@@ -70,6 +73,39 @@ public class JawnContract {
         if ( paddedHour.length() == 1 ) paddedHour = "0" + paddedHour;
         if ( paddedMinute.length() == 1 ) paddedMinute = "0" + paddedMinute;
         return paddedHour + ":" + paddedMinute;
+    }
+
+    public static String formatDaysOfWeek( int daysOfWeek ) {
+        StringBuilder b = new StringBuilder();
+        b.append( "<font color=\"" );
+        if ( ( daysOfWeek & DOW_SUNDAY ) == DOW_SUNDAY ) b.append( DOW_ENABLED_COLOR );
+        else b.append( DOW_DISABLED_COLOR );
+        b.append( "\">S</font> ");
+        b.append( "<font color=\"" );
+        if ( ( daysOfWeek & DOW_MONDAY ) == DOW_MONDAY ) b.append( DOW_ENABLED_COLOR );
+        else b.append( DOW_DISABLED_COLOR );
+        b.append( "\">M</font> ");
+        b.append( "<font color=\"" );
+        if ( ( daysOfWeek & DOW_TUESDAY ) == DOW_TUESDAY ) b.append( DOW_ENABLED_COLOR );
+        else b.append( DOW_DISABLED_COLOR );
+        b.append( "\">T</font> ");
+        b.append( "<font color=\"" );
+        if ( ( daysOfWeek & DOW_WEDNESDAY ) == DOW_WEDNESDAY ) b.append( DOW_ENABLED_COLOR );
+        else b.append( DOW_DISABLED_COLOR );
+        b.append( "\">W</font> ");
+        b.append( "<font color=\"" );
+        if ( ( daysOfWeek & DOW_THURSDAY ) == DOW_THURSDAY ) b.append( DOW_ENABLED_COLOR );
+        else b.append( DOW_DISABLED_COLOR );
+        b.append( "\">T</font> ");
+        b.append( "<font color=\"" );
+        if ( ( daysOfWeek & DOW_FRIDAY ) == DOW_FRIDAY ) b.append( DOW_ENABLED_COLOR );
+        else b.append( DOW_DISABLED_COLOR );
+        b.append( "\">F</font> ");
+        b.append( "<font color=\"" );
+        if ( ( daysOfWeek & DOW_SATURDAY ) == DOW_SATURDAY ) b.append( DOW_ENABLED_COLOR );
+        else b.append( DOW_DISABLED_COLOR );
+        b.append( "\">S</font>");
+        return b.toString();
     }
 
     public static void reset(Context context) {

@@ -38,11 +38,28 @@ public class AddNotifierActivity extends AppCompatActivity {
             CheckBox cb = (CheckBox) findViewById(R.id.notifier_enabled);
             cb.setVisibility(View.VISIBLE);
             cb.setChecked( n.isEnabled() );
-            // TODO: fill in sunday - saturday
+
+            CheckBox day = (CheckBox) findViewById(R.id.notifier_daysofweek_sunday);
+            day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_SUNDAY) == JawnContract.DOW_SUNDAY );
+            day = (CheckBox) findViewById(R.id.notifier_daysofweek_monday);
+            day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_MONDAY) == JawnContract.DOW_MONDAY );
+            day = (CheckBox) findViewById(R.id.notifier_daysofweek_tuesday);
+            day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_TUESDAY) == JawnContract.DOW_TUESDAY );
+            day = (CheckBox) findViewById(R.id.notifier_daysofweek_wednesday);
+            day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_WEDNESDAY) == JawnContract.DOW_WEDNESDAY );
+            day = (CheckBox) findViewById(R.id.notifier_daysofweek_thursday);
+            day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_THURSDAY) == JawnContract.DOW_THURSDAY );
+            day = (CheckBox) findViewById(R.id.notifier_daysofweek_friday);
+            day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_FRIDAY) == JawnContract.DOW_FRIDAY );
+            day = (CheckBox) findViewById(R.id.notifier_daysofweek_saturday);
+            day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_SATURDAY) == JawnContract.DOW_SATURDAY );
+
             TextView time = (TextView) findViewById(R.id.notifier_time);
             time.setText( JawnContract.formatTime( n.getHour(), n.getMinute() ) );
+
             TextView postalCode = (TextView) findViewById(R.id.notifier_postalcode);
             postalCode.setText( n.getPostalCode() );
+
             Toast.makeText(this, notifier.getPostalCode(), Toast.LENGTH_LONG).show();
         }
 
@@ -85,32 +102,32 @@ public class AddNotifierActivity extends AppCompatActivity {
 
         switch ( view.getId() ) {
             case R.id.notifier_daysofweek_sunday:
-                if (checked) selectedDaysOfWeek |= JawnContract.JawnNotifier.DOW_SUNDAY;
-                else selectedDaysOfWeek ^= JawnContract.JawnNotifier.DOW_SUNDAY;
+                if (checked) selectedDaysOfWeek |= JawnContract.DOW_SUNDAY;
+                else selectedDaysOfWeek ^= JawnContract.DOW_SUNDAY;
                 break;
             case R.id.notifier_daysofweek_monday:
-                if (checked) selectedDaysOfWeek |= JawnContract.JawnNotifier.DOW_MONDAY;
-                else selectedDaysOfWeek ^= JawnContract.JawnNotifier.DOW_MONDAY;
+                if (checked) selectedDaysOfWeek |= JawnContract.DOW_MONDAY;
+                else selectedDaysOfWeek ^= JawnContract.DOW_MONDAY;
                 break;
             case R.id.notifier_daysofweek_tuesday:
-                if (checked) selectedDaysOfWeek |= JawnContract.JawnNotifier.DOW_TUESDAY;
-                else selectedDaysOfWeek ^= JawnContract.JawnNotifier.DOW_TUESDAY;
+                if (checked) selectedDaysOfWeek |= JawnContract.DOW_TUESDAY;
+                else selectedDaysOfWeek ^= JawnContract.DOW_TUESDAY;
                 break;
             case R.id.notifier_daysofweek_wednesday:
-                if (checked) selectedDaysOfWeek |= JawnContract.JawnNotifier.DOW_WEDNESDAY;
-                else selectedDaysOfWeek ^= JawnContract.JawnNotifier.DOW_WEDNESDAY;
+                if (checked) selectedDaysOfWeek |= JawnContract.DOW_WEDNESDAY;
+                else selectedDaysOfWeek ^= JawnContract.DOW_WEDNESDAY;
                 break;
             case R.id.notifier_daysofweek_thursday:
-                if (checked) selectedDaysOfWeek |= JawnContract.JawnNotifier.DOW_THURSDAY;
-                else selectedDaysOfWeek ^= JawnContract.JawnNotifier.DOW_THURSDAY;
+                if (checked) selectedDaysOfWeek |= JawnContract.DOW_THURSDAY;
+                else selectedDaysOfWeek ^= JawnContract.DOW_THURSDAY;
                 break;
             case R.id.notifier_daysofweek_friday:
-                if (checked) selectedDaysOfWeek |= JawnContract.JawnNotifier.DOW_FRIDAY;
-                else selectedDaysOfWeek ^= JawnContract.JawnNotifier.DOW_FRIDAY;
+                if (checked) selectedDaysOfWeek |= JawnContract.DOW_FRIDAY;
+                else selectedDaysOfWeek ^= JawnContract.DOW_FRIDAY;
                 break;
             case R.id.notifier_daysofweek_saturday:
-                if (checked) selectedDaysOfWeek |= JawnContract.JawnNotifier.DOW_SATURDAY;
-                else selectedDaysOfWeek ^= JawnContract.JawnNotifier.DOW_SATURDAY;
+                if (checked) selectedDaysOfWeek |= JawnContract.DOW_SATURDAY;
+                else selectedDaysOfWeek ^= JawnContract.DOW_SATURDAY;
                 break;
 
         }

@@ -3,6 +3,7 @@ package com.miryor.jawn;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -110,7 +111,7 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
         }
 
         holder.enabled.setEnabled(n.isEnabled());
-        holder.daysOfWeek.setText(Integer.toString(n.getDaysOfWeek()));
+        holder.daysOfWeek.setText(Html.fromHtml( JawnContract.formatDaysOfWeek( n.getDaysOfWeek() ) ) );
         holder.time.setText( JawnContract.formatTime( n.getHour(), n.getMinute() ) );
         holder.postalCode.setText(n.getPostalCode());
 
