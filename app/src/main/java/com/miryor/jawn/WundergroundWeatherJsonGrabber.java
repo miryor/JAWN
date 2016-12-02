@@ -19,8 +19,8 @@ public class WundergroundWeatherJsonGrabber implements WeatherJsonGrabber {
     public InputStream getWeatherJsonInputStream() throws IOException {
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(1000 /* milliseconds */);
-        conn.setConnectTimeout(15000 /* milliseconds */);
+        conn.setReadTimeout(10000 /* milliseconds */);
+        conn.setConnectTimeout(30000 /* milliseconds */);
         conn.setRequestMethod("GET");
         conn.setDoInput(true);
         conn.connect();

@@ -1,8 +1,11 @@
 package com.miryor.jawn;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
@@ -47,6 +50,15 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
         TextView postalCode;
     }
 
+    public void cancelNotifierAlarm(Notifier notifier) {
+        Intent notificationIntent = new Intent(context, NotificationPublisher.class);
+        notificationIntent.putExtra( NotificationPublisher.WEATHER_API_PROVIDER, NotificationPublisher.WEATHER_API_PROVIDER_WUNDERGROUND );
+        notificationIntent.putExtra( NotificationPublisher.PASSED_POSTALCODE, notifier.getPostalCode() );
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int)notifier.getId(), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+    }
+
     public View getView(final int position, View convertView, ViewGroup parent) {
         View row = convertView;
         ViewHolder holder = null;
@@ -67,6 +79,7 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
                 @Override
                 public void onClick(View v) {
                     JawnContract.deleteNotifier(context, getItem(position).getId());
+                    cancelNotifierAlarm(getItem(position));
                     clear();
                     addAll( JawnContract.listNotifiers(context) );
                     notifyDataSetChanged();

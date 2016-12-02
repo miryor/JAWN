@@ -1,9 +1,13 @@
 package com.miryor.jawn;
 
+import android.app.AlarmManager;
 import android.app.DialogFragment;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.Visibility;
@@ -90,6 +94,16 @@ public class AddNotifierActivity extends AppCompatActivity {
         notifier.setPostalCode( ((TextView) findViewById(R.id.notifier_postalcode) ).getText().toString() );
         long id = JawnContract.saveNotifier( this, notifier );
         notifier.setId(id);
+
+        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        notificationIntent.putExtra( NotificationPublisher.WEATHER_API_PROVIDER, NotificationPublisher.WEATHER_API_PROVIDER_WUNDERGROUND );
+        notificationIntent.putExtra( NotificationPublisher.PASSED_POSTALCODE, notifier.getPostalCode() );
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int)notifier.getId(), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + 10000;
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+
         Intent intent = new Intent();
         intent.putExtra( Notifier.EXTRA_NAME, notifier );
         setResult(Notifier.RESULT_SAVED, intent);

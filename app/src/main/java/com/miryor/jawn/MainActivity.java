@@ -38,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private static String EMOJI_CLOUD_RAIN = "\uD83C\uDF27";
     private static String EMOJI_SUN_BEHIND_RAIN_CLOUD = "\uD83C\uDF26";
     */
-    private static final String URL = "http://api.wunderground.com/api/502f7c0bd4a4257d/hourly/q/CA/San_Francisco.json";
+    private static final String WUNDERGROUND_URL = "http://http://api.wunderground.com/api/502f7c0bd4a4257d/hourly/q/";
+    private static final String JSON_URL = ".json";
 
     private static List<Notifier> notifierList = null;
     private static NotifierArrayAdapter adapter = null;
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toast.makeText(parent.getContext(), "You have chosen the pen: " + pen, Toast.LENGTH_LONG).show();
 
-        new DownloadWeatherTask(parent.getContext()).execute(URL);
+        new DownloadWeatherTask(parent.getContext()).execute( WUNDERGROUND_URL + "11233" + JSON_URL );
 
 
         }
