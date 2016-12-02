@@ -3,11 +3,17 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1">
-    <CheckBox android:id="@+id/notifier_enabled"
+    <ImageButton android:id="@+id/notifier_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/ic_cancel_black_24dp" />
+    <!-- <CheckBox android:id="@+id/notifier_enabled"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
-        android:layout_gravity="center_vertical" />
+        android:layout_gravity="center_vertical" /> -->
     <TextView android:id="@+id/notifier_daysofweek"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

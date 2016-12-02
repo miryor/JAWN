@@ -7,6 +7,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.miryor.jawn.model.Notifier;
@@ -39,7 +40,8 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
     }
 
     static class ViewHolder {
-        CheckBox enabled;
+        ImageButton delete;
+        // CheckBox enabled;
         TextView daysOfWeek;
         TextView time;
         TextView postalCode;
@@ -53,13 +55,25 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
         if ( row == null ) {
             LayoutInflater inflator = ((Activity) context).getLayoutInflater();
             row = inflator.inflate(layoutResourceId, parent, false);
-            CheckBox enabled = (CheckBox) row.findViewById(R.id.notifier_enabled);
+            ImageButton delete = (ImageButton) row.findViewById(R.id.notifier_delete);
+            // CheckBox enabled = (CheckBox) row.findViewById(R.id.notifier_enabled);
             TextView daysOfWeek = (TextView) row.findViewById(R.id.notifier_daysofweek);
             TextView time = (TextView) row.findViewById(R.id.notifier_time);
             TextView postalCode = (TextView) row.findViewById(R.id.notifier_postalcode);
 
             holder = new ViewHolder();
-            holder.enabled = enabled;
+            holder.delete = delete;
+            holder.delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    JawnContract.deleteNotifier(context, getItem(position).getId());
+                    clear();
+                    addAll( JawnContract.listNotifiers(context) );
+                    notifyDataSetChanged();
+                    Toast.makeText(context, "Deleted notifier", Toast.LENGTH_LONG).show();
+                }
+            });
+            /*holder.enabled = enabled;
             holder.enabled.setChecked( n.isEnabled() );
             holder.enabled.setTag(position);
             holder.enabled.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +83,7 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
                     getItem(position).setEnabled(checkbox.isChecked());
                     Toast.makeText(context, "Checkbox from row " + position + " was checked", Toast.LENGTH_LONG).show();
                 }
-            });
+            });*/
             holder.daysOfWeek = daysOfWeek;
             holder.daysOfWeek.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,7 +124,7 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
             holder = (ViewHolder)row.getTag();
         }
 
-        holder.enabled.setEnabled(n.isEnabled());
+        // holder.enabled.setEnabled(n.isEnabled());
         holder.daysOfWeek.setText(Html.fromHtml( JawnContract.formatDaysOfWeek( n.getDaysOfWeek() ) ) );
         holder.time.setText( JawnContract.formatTime( n.getHour(), n.getMinute() ) );
         holder.postalCode.setText(n.getPostalCode());
