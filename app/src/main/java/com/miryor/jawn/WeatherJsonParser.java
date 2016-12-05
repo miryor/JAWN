@@ -28,7 +28,7 @@ public interface WeatherJsonParser {
     };
 
     public static String[] CLOUDY_WORDS = {
-            "cloudy", "fog", "haze", "hazy", "mist", "partly sunny"
+            "cloudy", "fog", "haze", "hazy", "mist", "overcast", "partly sunny"
     };
 
     public static String[] STORM_WORDS = {

@@ -67,6 +67,11 @@ public class JawnContract {
         }
     }
 
+    public static boolean isDayOfWeek( int dow, int day ) {
+        if ( ( dow & day ) == day ) return true;
+        else return false;
+    }
+
     public static String formatTime( int hour, int minute ) {
         String paddedHour = Integer.toString(hour);
         String paddedMinute = Integer.toString(minute);

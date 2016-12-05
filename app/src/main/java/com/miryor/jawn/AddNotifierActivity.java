@@ -98,11 +98,15 @@ public class AddNotifierActivity extends AppCompatActivity {
         Intent notificationIntent = new Intent(this, NotificationPublisher.class);
         notificationIntent.putExtra( NotificationPublisher.WEATHER_API_PROVIDER, NotificationPublisher.WEATHER_API_PROVIDER_WUNDERGROUND );
         notificationIntent.putExtra( NotificationPublisher.PASSED_POSTALCODE, notifier.getPostalCode() );
+        notificationIntent.putExtra( NotificationPublisher.PASSED_DOW, notifier.getDaysOfWeek() );
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int)notifier.getId(), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        long futureInMillis = SystemClock.elapsedRealtime() + 10000;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, notifier.getHour());
+        calendar.set(Calendar.MINUTE, notifier.getMinute());
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
         Intent intent = new Intent();
         intent.putExtra( Notifier.EXTRA_NAME, notifier );
