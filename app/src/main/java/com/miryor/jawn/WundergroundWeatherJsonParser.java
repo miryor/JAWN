@@ -5,10 +5,12 @@ import android.util.Log;
 
 import com.miryor.jawn.model.HourlyForecast;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,15 @@ import java.util.List;
 
 public class WundergroundWeatherJsonParser implements WeatherJsonParser {
     private InputStream inputStream;
+    public WundergroundWeatherJsonParser(String s) {
+        try {
+            this.inputStream = new ByteArrayInputStream(s.getBytes("UTF-8"));
+        }
+        catch ( UnsupportedEncodingException e ) {
+            // i guess its possible?
+            Log.e( "JAWN", "This shouldn't happen", e );
+        }
+    }
     public WundergroundWeatherJsonParser(InputStream inputStream) {
         this.inputStream = inputStream;
     }

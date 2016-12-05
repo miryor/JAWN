@@ -36,13 +36,9 @@ public class AddNotifierActivity extends AppCompatActivity {
             notifier = n;
         }
         else {
-            notifier = new Notifier( 0L, "", 0, 0, 0, true );
+            notifier = new Notifier( 0L, "", 0, 0, 0, JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND, "" );
         }
         if ( notifier.getId() > 0L ) {
-            CheckBox cb = (CheckBox) findViewById(R.id.notifier_enabled);
-            cb.setVisibility(View.VISIBLE);
-            cb.setChecked( n.isEnabled() );
-
             CheckBox day = (CheckBox) findViewById(R.id.notifier_daysofweek_sunday);
             day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_SUNDAY) == JawnContract.DOW_SUNDAY );
             day = (CheckBox) findViewById(R.id.notifier_daysofweek_monday);
@@ -63,8 +59,6 @@ public class AddNotifierActivity extends AppCompatActivity {
 
             TextView postalCode = (TextView) findViewById(R.id.notifier_postalcode);
             postalCode.setText( n.getPostalCode() );
-
-            Toast.makeText(this, notifier.getPostalCode(), Toast.LENGTH_LONG).show();
         }
 
     }
@@ -96,9 +90,7 @@ public class AddNotifierActivity extends AppCompatActivity {
         notifier.setId(id);
 
         Intent notificationIntent = new Intent(this, NotificationPublisher.class);
-        notificationIntent.putExtra( NotificationPublisher.WEATHER_API_PROVIDER, NotificationPublisher.WEATHER_API_PROVIDER_WUNDERGROUND );
-        notificationIntent.putExtra( NotificationPublisher.PASSED_POSTALCODE, notifier.getPostalCode() );
-        notificationIntent.putExtra( NotificationPublisher.PASSED_DOW, notifier.getDaysOfWeek() );
+        notificationIntent.putExtra( Notifier.EXTRA_NAME, notifier);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int)notifier.getId(), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar calendar = Calendar.getInstance();

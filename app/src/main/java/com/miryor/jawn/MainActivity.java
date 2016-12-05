@@ -62,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // JawnContract.reset(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -81,13 +84,11 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(listNotificationsClickListener);
         listView.setAdapter(adapter);
 
-        Toast.makeText(this, "toast onCreate", Toast.LENGTH_LONG).show();
-
     }
 
     public void addNotification(View view) {
         Intent intent = new Intent(this, AddNotifierActivity.class);
-        intent.putExtra( Notifier.EXTRA_NAME, new Notifier(0L, "", 0, 0, 0, true) );
+        intent.putExtra( Notifier.EXTRA_NAME, new Notifier(0L, "", 0, 0, 0, JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND, "") );
         startActivityForResult(intent, Notifier.RESULT_SAVED);
     }
 
@@ -95,13 +96,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d("JAWN", "onActivityResult " + resultCode );
-        Toast.makeText(this, "toast " + resultCode, Toast.LENGTH_LONG).show();
-        if ( resultCode == Notifier.RESULT_SAVED ) {
+        // Toast.makeText(this, "toast " + resultCode, Toast.LENGTH_LONG).show();
+        if ( resultCode == Notifier.RESULT_IGNORE ) {
+        }
+        else if ( resultCode == Notifier.RESULT_SAVED ) {
             adapter.clear();
             adapter.addAll( JawnContract.listNotifiers(this) );
             adapter.notifyDataSetChanged();
             Notifier n = (Notifier) data.getParcelableExtra( Notifier.EXTRA_NAME );
             Toast.makeText(this, "Saved " + n.getPostalCode(), Toast.LENGTH_LONG).show();
+        }
+        else if ( resultCode == Notifier.RESULT_DOESNTEXIST ) {
+            Toast.makeText(this, "No forecast for this notifier yet", Toast.LENGTH_LONG).show();
         }
         else {
             Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();

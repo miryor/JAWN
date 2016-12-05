@@ -19,20 +19,30 @@
         android:layout_height="match_parent"
         android:text="Days of Week"
         android:layout_weight="0.21"
-        android:layout_gravity="center_vertical"
-        android:gravity="center_vertical" />
+        android:gravity="left" />
     <TextView android:id="@+id/notifier_time"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="Time"
         android:layout_weight="0.37"
-        android:layout_gravity="center_vertical"
-        android:gravity="center_vertical" />
+        android:gravity="left" />
     <TextView android:id="@+id/notifier_postalcode"
-        android:layout_width="110dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="Postal Code"
-        android:layout_gravity="center_vertical"
-        android:gravity="center_vertical" />
+        android:gravity="left"
+        android:layout_weight="0.38" />
+    <ImageButton android:id="@+id/notifier_notify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/ic_speaker_phone_black_24dp" />
+    <ImageButton android:id="@+id/notifier_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/ic_visibility_black_24dp" />
 
 </LinearLayout>

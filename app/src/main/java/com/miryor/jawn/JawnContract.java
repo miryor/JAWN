@@ -1,5 +1,7 @@
 package com.miryor.jawn;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -7,7 +9,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.provider.BaseColumns;
+import android.support.v7.app.NotificationCompat;
 
+import com.miryor.jawn.model.HourlyForecast;
 import com.miryor.jawn.model.Notifier;
 
 import java.util.ArrayList;
@@ -19,6 +23,8 @@ import java.util.List;
 
 public class JawnContract {
     private JawnContract() {}
+
+    public static final int NOTIFICATION_ID = 15968902;
 
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "JAWN.db";
@@ -34,12 +40,15 @@ public class JawnContract {
     public static final String DOW_ENABLED_COLOR = "#00ff00";
     public static final String DOW_DISABLED_COLOR = "#ff0000";
 
+    public static final String WEATHER_API_PROVIDER_WUNDERGROUND = "WUNDERGROUND";
+
     public static class JawnNotifier implements BaseColumns {
         public static final String TABLE_NAME = "notifier";
         public static final String COLUMN_NAME_HOUR = "hour";
         public static final String COLUMN_NAME_MINUTE = "minute";
         public static final String COLUMN_NAME_POSTALCODE = "postal_code";
         public static final String COLUMN_NAME_DAYSOFWEEK = "days_of_week";
+        public static final String COLUMN_NAME_PROVIDER = "provider";
         public static final String COLUMN_NAME_FORECAST = "forecast";
     }
 
@@ -51,6 +60,7 @@ public class JawnContract {
                 JawnNotifier.COLUMN_NAME_DAYSOFWEEK + " INTEGER," +
                 JawnNotifier.COLUMN_NAME_HOUR + " INTEGER," +
                 JawnNotifier.COLUMN_NAME_MINUTE + " INTEGER," +
+                JawnNotifier.COLUMN_NAME_PROVIDER + " TEXT," +
                 JawnNotifier.COLUMN_NAME_FORECAST + " TEXT )";
 
         private static final String SQL_DELETE_NOTIFIER = "DROP TABLE IF EXISTS " +
@@ -154,9 +164,12 @@ public class JawnContract {
         values.put(JawnNotifier.COLUMN_NAME_DAYSOFWEEK, n.getDaysOfWeek());
         values.put(JawnNotifier.COLUMN_NAME_HOUR, n.getHour());
         values.put(JawnNotifier.COLUMN_NAME_MINUTE, n.getMinute());
+        values.put(JawnNotifier.COLUMN_NAME_PROVIDER, n.getProvider());
         values.put(JawnNotifier.COLUMN_NAME_FORECAST, "");
 
         long rowId = db.insert(JawnNotifier.TABLE_NAME, null, values);
+
+        db.close();
         return rowId;
     }
 
@@ -168,7 +181,7 @@ public class JawnContract {
         values.put(JawnNotifier.COLUMN_NAME_DAYSOFWEEK, n.getDaysOfWeek());
         values.put(JawnNotifier.COLUMN_NAME_HOUR, n.getHour());
         values.put(JawnNotifier.COLUMN_NAME_MINUTE, n.getMinute());
-        values.put(JawnNotifier.COLUMN_NAME_FORECAST, "");
+        values.put(JawnNotifier.COLUMN_NAME_PROVIDER, n.getProvider());
 
         String selection = JawnNotifier._ID + " = ?";
         String[] selectionArgs = { Long.toString( n.getId() ) };
@@ -180,12 +193,32 @@ public class JawnContract {
                 selectionArgs);
     }
 
+    public static int updateNotifierForecast( Context context, Notifier n ) {
+        JawnNotifierDbHelper dbHelper = new JawnNotifierDbHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        // values.put(JawnNotifier.COLUMN_NAME_PROVIDER, n.getProvider());
+        values.put(JawnNotifier.COLUMN_NAME_FORECAST, n.getForecast());
+
+        String selection = JawnNotifier._ID + " = ?";
+        String[] selectionArgs = { Long.toString( n.getId() ) };
+
+        int updated = db.update(
+                JawnNotifier.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+        db.close();
+        return updated;
+    }
+
     public static void deleteNotifier(Context context, long id) {
         JawnNotifierDbHelper dbHelper = new JawnNotifierDbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String selection = JawnNotifier._ID + " = ?";
         String[] selectionArgs = { Long.toString(id) };
         db.delete( JawnNotifier.TABLE_NAME, selection, selectionArgs );
+        db.close();
     }
 
     public static List<Notifier> listNotifiers(Context context) {
@@ -197,6 +230,7 @@ public class JawnContract {
                 JawnNotifier.COLUMN_NAME_DAYSOFWEEK,
                 JawnNotifier.COLUMN_NAME_HOUR,
                 JawnNotifier.COLUMN_NAME_MINUTE,
+                JawnNotifier.COLUMN_NAME_PROVIDER,
                 JawnNotifier.COLUMN_NAME_FORECAST
         };
         Cursor c = db.query(JawnNotifier.TABLE_NAME,
@@ -215,12 +249,14 @@ public class JawnContract {
                 int daysOfWeek = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_DAYSOFWEEK));
                 int hour = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_HOUR));
                 int minute = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_MINUTE));
-                int enabled = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_FORECAST));
-                list.add( new Notifier(id, postalCode, daysOfWeek, hour, minute, "" ) );
+                String provider = c.getString(c.getColumnIndex(JawnNotifier.COLUMN_NAME_PROVIDER));
+                String forecast = c.getString(c.getColumnIndex(JawnNotifier.COLUMN_NAME_FORECAST));
+                list.add( new Notifier(id, postalCode, daysOfWeek, hour, minute, provider, forecast ) );
             } while (c.moveToNext());
         }
         c.close();
 
+        db.close();
         return list;
     }
 
@@ -233,6 +269,7 @@ public class JawnContract {
                 JawnNotifier.COLUMN_NAME_DAYSOFWEEK,
                 JawnNotifier.COLUMN_NAME_HOUR,
                 JawnNotifier.COLUMN_NAME_MINUTE,
+                JawnNotifier.COLUMN_NAME_PROVIDER,
                 JawnNotifier.COLUMN_NAME_FORECAST
         };
         String selection = JawnNotifier._ID + " = ?";
@@ -253,12 +290,79 @@ public class JawnContract {
                 int daysOfWeek = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_DAYSOFWEEK));
                 int hour = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_HOUR));
                 int minute = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_MINUTE));
-                int enabled = c.getInt(c.getColumnIndex(JawnNotifier.COLUMN_NAME_FORECAST));
-                n = new Notifier(id, postalCode, daysOfWeek, hour, minute, "" );
+                String provider = c.getString(c.getColumnIndex(JawnNotifier.COLUMN_NAME_PROVIDER));
+                String forecast = c.getString(c.getColumnIndex(JawnNotifier.COLUMN_NAME_FORECAST));
+                n = new Notifier(id, postalCode, daysOfWeek, hour, minute, provider, forecast );
             } while (c.moveToNext());
         }
         c.close();
-
+        db.close();
         return n;
+    }
+
+    public static String getEmoji(String condition) {
+        String emoji = WeatherJsonParser.EMOJI_QUESTION;
+        for ( int x = 0; x < WeatherJsonParser.STORM_WORDS.length; x++ ) {
+            if ( condition.indexOf( WeatherJsonParser.STORM_WORDS[x] ) >= 0 ) {
+                emoji = WeatherJsonParser.EMOJI_CLOUD_LIGHTNING_RAIN;
+                return emoji;
+            }
+        }
+        for (int x = 0; x < WeatherJsonParser.CLOUDY_WORDS.length; x++) {
+            if (condition.indexOf(WeatherJsonParser.CLOUDY_WORDS[x]) >= 0) {
+                emoji = WeatherJsonParser.EMOJI_SUN_BEHIND_CLOUD;
+                return emoji;
+            }
+        }
+        for ( int x = 0; x < WeatherJsonParser.SNOW_WORDS.length; x++ ) {
+            if ( condition.indexOf( WeatherJsonParser.SNOW_WORDS[x] ) >= 0 ) {
+                emoji = WeatherJsonParser.EMOJI_SNOWFLAKE;
+                return emoji;
+            }
+        }
+        for (int x = 0; x < WeatherJsonParser.RAIN_WORDS.length; x++) {
+            if (condition.indexOf(WeatherJsonParser.RAIN_WORDS[x]) >= 0) {
+                emoji = WeatherJsonParser.EMOJI_UMBRELLA;
+                return emoji;
+            }
+        }
+        for (int x = 0; x < WeatherJsonParser.SUNNY_WORDS.length; x++) {
+            if (condition.indexOf(WeatherJsonParser.SUNNY_WORDS[x]) >= 0) {
+                emoji = WeatherJsonParser.EMOJI_SUN;
+                return emoji;
+            }
+        }
+        for (int x = 0; x < WeatherJsonParser.CLEAR_WORDS.length; x++) {
+            if (condition.indexOf(WeatherJsonParser.CLEAR_WORDS[x]) >= 0) {
+                emoji = " ";
+                return emoji;
+            }
+        }
+        return emoji;
+    }
+
+    public static void formatForecastForNotification( StringBuilder builder, HourlyForecast hf ) {
+        String condition = hf.getCondition().toLowerCase();
+        builder.append( getEmoji(condition) );
+        builder.append( " " );
+        builder.append( hf.getHour() );
+        builder.append( "H " );
+        builder.append( hf.getFeelsLikeF() );
+        builder.append( "\u00B0" );
+    }
+
+    public static void sendNotification(Context context, String result) {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context);
+        mBuilder
+                .setSmallIcon(R.drawable.ic_wb_sunny_black_24dp)
+                .setContentTitle("Weather Notification")
+                .setContentText(result);
+
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // Builds the notification and issues it.
+        mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
     }
 }

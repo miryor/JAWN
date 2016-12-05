@@ -13,19 +13,23 @@ public class Notifier implements Parcelable {
     private int daysOfWeek;
     private int hour;
     private int minute;
-
+    private String provider;
     private String forecast;
 
     public static String EXTRA_NAME = "notifier";
     public static int RESULT_SAVED = 100;
     public static int RESULT_CANCELLED = 200;
+    public static int RESULT_VIEWED = 101;
+    public static int RESULT_DOESNTEXIST = 102;
+    public static int RESULT_IGNORE = 300;
 
-    public Notifier(long id, String postalCode, int daysOfWeek, int hour, int minute, String forecast) {
+    public Notifier(long id, String postalCode, int daysOfWeek, int hour, int minute, String provider, String forecast) {
         this.id = id;
         this.postalCode = postalCode;
         this.daysOfWeek = daysOfWeek;
         this.hour = hour;
         this.minute = minute;
+        this.provider = provider;
         this.forecast = forecast;
     }
 
@@ -69,6 +73,14 @@ public class Notifier implements Parcelable {
         this.minute = minute;
     }
 
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
     public String getForecast() {
         return forecast;
     }
@@ -89,6 +101,7 @@ public class Notifier implements Parcelable {
         dest.writeInt(daysOfWeek);
         dest.writeInt(hour);
         dest.writeInt(minute);
+        dest.writeString(provider);
         dest.writeString( forecast );
     }
 
@@ -108,6 +121,7 @@ public class Notifier implements Parcelable {
         daysOfWeek = in.readInt();
         hour = in.readInt();
         minute = in.readInt();
+        provider = in.readString();
         forecast = in.readString();
     }
 }

@@ -28,7 +28,7 @@ public class JawnContractTest {
 
     @Test
     public void testInsert() {
-        Notifier n = new Notifier( 0, "11233", 1, 10, 0, true );
+        Notifier n = new Notifier( 0, "11233", 1, 10, 0, JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND, "" );
         long id = JawnContract.saveNotifier(InstrumentationRegistry.getTargetContext(), n);
         Log.d("JAWN", "Inserted id: " + id);
         List<Notifier> list = JawnContract.listNotifiers(InstrumentationRegistry.getTargetContext());

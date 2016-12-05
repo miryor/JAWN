@@ -9,8 +9,11 @@ import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import com.miryor.jawn.model.HourlyForecast;
+import com.miryor.jawn.model.Notifier;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,23 +25,19 @@ import java.util.List;
 
 public class NotificationPublisher extends BroadcastReceiver {
 
-    public static final String WEATHER_API_PROVIDER = "WEATHER_API_PROVIDER";
-    public static final String WEATHER_API_PROVIDER_WUNDERGROUND = "WUNDERGROUND";
     private static final String WUNDERGROUND_URL = "http://api.wunderground.com/api/502f7c0bd4a4257d/hourly/q/";
     private static final String JSON_URL = ".json";
-    private static final int NOTIFICATION_ID = 15968902;
 
-    public static final String PASSED_POSTALCODE = "PASSED_POSTALCODE";
-    public static final String PASSED_DOW = "PASSED_DOW";
-    public static final String PASSED_HOUR = "PASSED_HOUR";
-    public static final String PASSED_MINUTE = "PASSED_MINUTE";
+    private Notifier notifier = null;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        String provider = intent.getStringExtra( WEATHER_API_PROVIDER );
-        String zipCode = intent.getStringExtra(PASSED_POSTALCODE);
-        int dow = intent.getIntExtra(PASSED_DOW,0);
+        Notifier notifier = (Notifier) intent.getParcelableExtra(Notifier.EXTRA_NAME);
+
+        String provider = notifier.getProvider();
+        String zipCode = notifier.getPostalCode();
+        int dow = notifier.getDaysOfWeek();
         Calendar cal = Calendar.getInstance();
         int calDayOfWeek = cal.get( Calendar.DAY_OF_WEEK );
         if (
@@ -50,9 +49,9 @@ public class NotificationPublisher extends BroadcastReceiver {
                 ( calDayOfWeek == Calendar.FRIDAY && JawnContract.isDayOfWeek( dow, JawnContract.DOW_FRIDAY ) ) ||
                 ( calDayOfWeek == Calendar.SATURDAY && JawnContract.isDayOfWeek( dow, JawnContract.DOW_SATURDAY ) )
         ){
-            if (provider.equals(WEATHER_API_PROVIDER_WUNDERGROUND)) {
+            if (provider.equals(JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND)) {
                 Log.d("JAWN", "Getting weather from: " + WUNDERGROUND_URL + zipCode + JSON_URL);
-                new DownloadWeatherTask(context).execute(WUNDERGROUND_URL + zipCode + JSON_URL);
+                new DownloadWeatherTask(context,notifier).execute(WUNDERGROUND_URL + zipCode + JSON_URL);
             } else {
                 notifyError(context, "Wrong provider set: " + provider + ", could not download weather");
             }
@@ -63,30 +62,21 @@ public class NotificationPublisher extends BroadcastReceiver {
     }
 
     private void notifyError(Context context, String error) {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context);
-        mBuilder
-                .setSmallIcon(R.drawable.ic_wb_sunny_black_24dp)
-                .setContentTitle("JAWN ERROR")
-                .setContentText(error);
-
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNotifyMgr =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        // Builds the notification and issues it.
-        mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
+        JawnContract.sendNotification(context, error);
     }
 
     private class DownloadWeatherTask extends AsyncTask<String, Void, String> {
         Context context;
-        private DownloadWeatherTask( Context context ) {
+        Notifier notifier;
+        private DownloadWeatherTask( Context context, Notifier notifier ) {
             this.context = context;
+            this.notifier = notifier;
         }
 
         @Override
         protected String doInBackground(String... urls) {
             try {
-                return loadJsonFromNetwork(urls[0]);
+                return loadJsonFromNetwork(context, notifier, urls[0]);
             }
             catch (IOException e) {
                 Log.e( "JAWN", context.getResources().getString(R.string.connection_error), e );
@@ -96,92 +86,35 @@ public class NotificationPublisher extends BroadcastReceiver {
 
         @Override
         protected void onPostExecute(String result) {
-            NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(context);
-            mBuilder
-                    .setSmallIcon(R.drawable.ic_wb_sunny_black_24dp)
-                    .setContentTitle("Weather Notification")
-                    .setContentText(result);
-
-            // Gets an instance of the NotificationManager service
-            NotificationManager mNotifyMgr =
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            // Builds the notification and issues it.
-            mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
+            JawnContract.sendNotification(context, result);
         }
     }
 
 
-    private String loadJsonFromNetwork(String url) throws IOException {
+    private String loadJsonFromNetwork(Context context, Notifier notifier, String url) throws IOException {
         WundergroundWeatherJsonGrabber g = new WundergroundWeatherJsonGrabber(url);
-        WundergroundWeatherJsonParser p = new WundergroundWeatherJsonParser(g.getWeatherJsonInputStream());
-        List<HourlyForecast> list = p.parseHourlyForecast();
+        BufferedReader reader = null;
         StringBuilder builder = new StringBuilder();
-        SimpleDateFormat df = new SimpleDateFormat("MM/dd HH");
-        int max = list.size();
-        if ( max > 3 ) max = 3;
-        for ( int i = 0; i < max; i++ ) {
-            HourlyForecast hf = list.get(i);
-            String condition = hf.getCondition().toLowerCase();
-            boolean found = false;
-            for ( int x = 0; x < WeatherJsonParser.STORM_WORDS.length; x++ ) {
-                if ( condition.indexOf( WeatherJsonParser.STORM_WORDS[x] ) >= 0 ) {
-                    builder.append( WeatherJsonParser.EMOJI_CLOUD_LIGHTNING_RAIN );
-                    found = true;
-                    break;
-                }
+        try {
+            reader = new BufferedReader(new InputStreamReader(g.getWeatherJsonInputStream(), "UTF-8"));
+            char[] chars = new char[1024];
+            int len;
+            while ((len = reader.read(chars)) != -1) {
+                builder.append(chars, 0, len);
             }
-            if ( found ) continue;
-            for ( int x = 0; x < WeatherJsonParser.CLOUDY_WORDS.length; x++ ) {
-                if ( condition.indexOf( WeatherJsonParser.CLOUDY_WORDS[x] ) >= 0 ) {
-                    builder.append( WeatherJsonParser.EMOJI_SUN_BEHIND_CLOUD );
-                    found = true;
-                    break;
-                }
-            }
-            if ( found ) continue;
-            for ( int x = 0; x < WeatherJsonParser.SNOW_WORDS.length; x++ ) {
-                if ( condition.indexOf( WeatherJsonParser.SNOW_WORDS[x] ) >= 0 ) {
-                    builder.append( WeatherJsonParser.EMOJI_SNOWFLAKE );
-                    found = true;
-                    break;
-                }
-            }
-            if ( found ) continue;
-            for ( int x = 0; x < WeatherJsonParser.RAIN_WORDS.length; x++ ) {
-                if ( condition.indexOf( WeatherJsonParser.RAIN_WORDS[x] ) >= 0 ) {
-                    builder.append( WeatherJsonParser.EMOJI_UMBRELLA );
-                    found = true;
-                    break;
-                }
-            }
-            if ( found ) continue;
-            for ( int x = 0; x < WeatherJsonParser.SUNNY_WORDS.length; x++ ) {
-                if ( condition.indexOf( WeatherJsonParser.SUNNY_WORDS[x] ) >= 0 ) {
-                    builder.append( WeatherJsonParser.EMOJI_SUN );
-                    found = true;
-                    break;
-                }
-            }
-            if ( found ) continue;
-            for ( int x = 0; x < WeatherJsonParser.CLEAR_WORDS.length; x++ ) {
-                if ( condition.indexOf( WeatherJsonParser.CLEAR_WORDS[x] ) >= 0 ) {
-                    found = true;
-                    break;
-                }
-            }
-            if ( !found) builder.append( WeatherJsonParser.EMOJI_QUESTION );
         }
-        if ( builder.length() > 0 ) builder.append( " " );
-        for ( int i = 0; i < max; i++ ) {
-            HourlyForecast hf = list.get(i);
-            if ( i > 0 ) builder.append( ", " );
-            builder.append( df.format(new Date(hf.getEpoch()*1000)) );
-            builder.append( " " );
-            builder.append( hf.getTempF() );
-            builder.append( "\u00B0" );
-            builder.append( " " );
-            builder.append( hf.getCondition() );
+        finally {
+            if ( reader != null ) try { reader.close(); } catch ( IOException e ) {}
+        }
+        String forecast = builder.toString();
+        notifier.setForecast( forecast );
+        JawnContract.updateNotifierForecast(context, notifier);
+        WundergroundWeatherJsonParser p = new WundergroundWeatherJsonParser( forecast );
+        List<HourlyForecast> list = p.parseHourlyForecast();
+        builder = new StringBuilder();
+        for ( HourlyForecast hf : list ) {
+            if ( builder.length() > 0 ) builder.append( ", " );
+            JawnContract.formatForecastForNotification(builder, hf);
         }
         return builder.toString();
     }
