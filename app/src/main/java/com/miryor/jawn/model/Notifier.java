@@ -14,19 +14,19 @@ public class Notifier implements Parcelable {
     private int hour;
     private int minute;
 
-    private boolean enabled;
+    private String forecast;
 
     public static String EXTRA_NAME = "notifier";
     public static int RESULT_SAVED = 100;
     public static int RESULT_CANCELLED = 200;
 
-    public Notifier(long id, String postalCode, int daysOfWeek, int hour, int minute, boolean enabled) {
+    public Notifier(long id, String postalCode, int daysOfWeek, int hour, int minute, String forecast) {
         this.id = id;
         this.postalCode = postalCode;
         this.daysOfWeek = daysOfWeek;
         this.hour = hour;
         this.minute = minute;
-        this.enabled = enabled;
+        this.forecast = forecast;
     }
 
     public long getId() {
@@ -69,12 +69,12 @@ public class Notifier implements Parcelable {
         this.minute = minute;
     }
 
-    public boolean isEnabled() {
-        return enabled;
+    public String getForecast() {
+        return forecast;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setForecast(String forecast) {
+        this.forecast = forecast;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class Notifier implements Parcelable {
         dest.writeInt(daysOfWeek);
         dest.writeInt(hour);
         dest.writeInt(minute);
-        dest.writeInt( (enabled) ? 1 : 0 );
+        dest.writeString( forecast );
     }
 
     public static final Parcelable.Creator<Notifier> CREATOR = new Parcelable.Creator<Notifier>() {
@@ -108,6 +108,6 @@ public class Notifier implements Parcelable {
         daysOfWeek = in.readInt();
         hour = in.readInt();
         minute = in.readInt();
-        enabled = ( (in.readInt() == 1) ? true : false );
+        forecast = in.readString();
     }
 }
