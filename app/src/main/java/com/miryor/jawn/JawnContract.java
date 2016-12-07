@@ -72,7 +72,7 @@ public class JawnContract {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL(SQL_DELETE_NOTIFIER);
+            // db.execSQL(SQL_DELETE_NOTIFIER);
             db.execSQL(SQL_CREATE_NOTIFIER);
         }
 
@@ -131,6 +131,7 @@ public class JawnContract {
         JawnNotifierDbHelper dbHelper = new JawnNotifierDbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL( JawnNotifierDbHelper.SQL_DELETE_NOTIFIER );
+        db.close();
         dbHelper.onCreate(db);
     }
 
