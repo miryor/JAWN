@@ -21,7 +21,7 @@
         </activity>
         <activity android:name=".AddNotifierActivity" />
 
-        <receiver android:name=".NotificationPublisher" />
+        <receiver android:name=".NotificationPublisher" android:exported="true" />
         <receiver android:name=".OnBootReceiver"
             android:enabled="true">
             <intent-filter>
