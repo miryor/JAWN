@@ -150,7 +150,7 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
                                 for (HourlyForecast hf : list) {
                                     JawnContract.formatForecastForNotification(builder, hf);
                                 }
-                                JawnContract.sendNotification(context, builder.toString());
+                                Utils.sendNotification(context, builder.toString());
                                 Toast.makeText(context, "Sent notification", Toast.LENGTH_LONG).show();
                             }
                         } catch ( Exception e ) {

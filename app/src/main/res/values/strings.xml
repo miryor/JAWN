@@ -19,5 +19,7 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_save">Save</string>
     <string name="title_activity_view_hourly_forecast">ViewHourlyForecastActivity</string>
+    <string name="preference_lastnotificationid">LastNotificationId</string>
+    <string name="preference_jawnnotifier">JAWNNotifier</string>
 
 </resources>

@@ -352,18 +352,4 @@ public class JawnContract {
         builder.append( "\u00B0" );
     }
 
-    public static void sendNotification(Context context, String result) {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context);
-        mBuilder
-                .setSmallIcon(R.drawable.ic_wb_sunny_black_24dp)
-                .setContentTitle("Weather Notification")
-                .setContentText(result);
-
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNotifyMgr =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        // Builds the notification and issues it.
-        mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
-    }
 }

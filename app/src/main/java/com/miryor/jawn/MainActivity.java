@@ -3,6 +3,7 @@ package com.miryor.jawn;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import com.miryor.jawn.model.Notifier;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -60,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
             */
     };
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -69,6 +73,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         notifierList = JawnContract.listNotifiers(this);
+
+        for ( Notifier notifier : notifierList ) {
+            Log.d( "JAWN", "From MainActivity setting alarm for " + notifier.getPostalCode() + " at " + notifier.getHour() + ":" + notifier.getMinute() );
+            Utils.setNotificationAlarm(this, notifier);
+
+        }
 
         /*List<Notifier> list = new ArrayList<Notifier>();
         list.add( new Notifier(1, "12345", 1, 12, 0, true) );

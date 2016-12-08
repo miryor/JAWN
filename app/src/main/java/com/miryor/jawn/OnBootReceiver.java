@@ -19,28 +19,16 @@ import java.util.List;
 public class OnBootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+        Log.d( "JAWN", "Getting list of notificatiers and settings alarms" );
+        // if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             List<Notifier> list = JawnContract.listNotifiers(context);
             Calendar calendar = Calendar.getInstance();
             for ( Notifier notifier : list ) {
                 Log.d( "JAWN", "Setting alarm for " + notifier.getPostalCode() + " at " + notifier.getHour() + ":" + notifier.getMinute() );
-                Intent notificationIntent = new Intent(context, NotificationPublisher.class);
-                notificationIntent.putExtra( Notifier.EXTRA_NAME, notifier);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int)notifier.getId(), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                long current = System.currentTimeMillis();
-                calendar.setTimeInMillis(current);
-                calendar.set(Calendar.HOUR_OF_DAY, notifier.getHour());
-                calendar.set(Calendar.MINUTE, notifier.getMinute());
-                long alarmTime = calendar.getTimeInMillis();
-                if ( alarmTime < current ) {
-                    calendar.add( Calendar.DAY_OF_YEAR, 1 );
-                    alarmTime = calendar.getTimeInMillis();
-                }
-                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY, pendingIntent);
+                Utils.setNotificationAlarm(context, notifier);
 
             }
-        }
+        // }
     }
 }

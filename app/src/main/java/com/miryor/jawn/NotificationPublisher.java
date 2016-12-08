@@ -62,7 +62,7 @@ public class NotificationPublisher extends BroadcastReceiver {
     }
 
     private void notifyError(Context context, String error) {
-        JawnContract.sendNotification(context, error);
+        Utils.sendNotification(context, error);
     }
 
     private class DownloadWeatherTask extends AsyncTask<String, Void, String> {
@@ -86,7 +86,7 @@ public class NotificationPublisher extends BroadcastReceiver {
 
         @Override
         protected void onPostExecute(String result) {
-            JawnContract.sendNotification(context, result);
+            Utils.sendNotification(context, result);
         }
     }
 

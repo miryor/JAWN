@@ -89,22 +89,7 @@ public class AddNotifierActivity extends AppCompatActivity {
         long id = JawnContract.saveNotifier( this, notifier );
         notifier.setId(id);
 
-        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
-        notificationIntent.putExtra( Notifier.EXTRA_NAME, notifier);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int)notifier.getId(), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Calendar calendar = Calendar.getInstance();
-        long current = System.currentTimeMillis();
-        calendar.setTimeInMillis(current);
-        calendar.set(Calendar.HOUR_OF_DAY, notifier.getHour());
-        calendar.set(Calendar.MINUTE, notifier.getMinute());
-        long alarmTime = calendar.getTimeInMillis();
-        if ( alarmTime < current ) {
-            calendar.add( Calendar.DAY_OF_YEAR, 1 );
-            alarmTime = calendar.getTimeInMillis();
-        }
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY, pendingIntent);
+        Utils.setNotificationAlarm(this, notifier);
 
         Intent intent = new Intent();
         intent.putExtra( Notifier.EXTRA_NAME, notifier );
