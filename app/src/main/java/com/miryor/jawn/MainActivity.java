@@ -28,6 +28,11 @@ import java.util.List;
  *
  * To read:
  * http://stackoverflow.com/questions/8999375/cancel-alarm-manager-pending-intent-according-to-uniqueid-android
+ *
+ * To read:
+ * https://developers.google.com/identity/sign-in/android/backend-auth
+ * about signing
+ * https://developer.android.com/studio/publish/app-signing.html
  */
 public class MainActivity extends AppCompatActivity {
 
