@@ -26,7 +26,7 @@ public class JawnContract {
 
     public static final int NOTIFICATION_ID = 15968902;
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "JAWN.db";
 
     public static final int DOW_SUNDAY = 1;
@@ -72,12 +72,14 @@ public class JawnContract {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            // db.execSQL(SQL_DELETE_NOTIFIER);
+            db.execSQL(SQL_DELETE_NOTIFIER);
             db.execSQL(SQL_CREATE_NOTIFIER);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            db.execSQL(SQL_DELETE_NOTIFIER);
+            db.execSQL(SQL_CREATE_NOTIFIER);
         }
     }
 

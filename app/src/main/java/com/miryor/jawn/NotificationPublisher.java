@@ -1,5 +1,6 @@
 package com.miryor.jawn;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,9 +33,12 @@ public class NotificationPublisher extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Notifier notifier = intent.getParcelableExtra( Notifier.EXTRA_NAME );
+        Log.d( "JAWN", "Received alarm for " + notifier.getPostalCode() );
         Intent service = new Intent(context, WeatherNotificationIntentService.class);
-        service.putExtra( Notifier.EXTRA_NAME, intent.getParcelableExtra( Notifier.EXTRA_NAME ) );
+        service.putExtra( Notifier.EXTRA_NAME, notifier );
         startWakefulService(context, service);
+        setResultCode(Activity.RESULT_OK);
 
         /*NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notifier notifier = (Notifier) intent.getParcelableExtra(Notifier.EXTRA_NAME);

@@ -74,11 +74,11 @@ public class MainActivity extends AppCompatActivity {
 
         notifierList = JawnContract.listNotifiers(this);
 
-        for ( Notifier notifier : notifierList ) {
+        /*for ( Notifier notifier : notifierList ) {
             Log.d( "JAWN", "From MainActivity setting alarm for " + notifier.getPostalCode() + " at " + notifier.getHour() + ":" + notifier.getMinute() );
             Utils.setNotificationAlarm(this, notifier);
 
-        }
+        }*/
 
         /*List<Notifier> list = new ArrayList<Notifier>();
         list.add( new Notifier(1, "12345", 1, 12, 0, true) );

@@ -29,8 +29,12 @@ public class WeatherNotificationIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
+        Log.d( "JAWN", "onHandleIntent " + intent.getClass().getName() );
+
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         Notifier notifier = (Notifier) intent.getParcelableExtra(Notifier.EXTRA_NAME);
+
+        Log.d( "JAWN", "WeatherNotificationIntentService to get weather for " + notifier.getPostalCode() );
 
         String provider = notifier.getProvider();
         String zipCode = notifier.getPostalCode();
@@ -63,7 +67,6 @@ public class WeatherNotificationIntentService extends IntentService {
         else {
             Log.d( "JAWN", "Notification not set for " + calDayOfWeek );
         }
-
 
         NotificationPublisher.completeWakefulIntent(intent);
     }
