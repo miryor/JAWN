@@ -30,12 +30,12 @@ public class Utils {
         calendar.set(Calendar.HOUR_OF_DAY, notifier.getHour());
         calendar.set(Calendar.MINUTE, notifier.getMinute());
         long alarmTime = calendar.getTimeInMillis();
-        /*if ( alarmTime < current ) {
+        if ( alarmTime < current ) {
             calendar.add( Calendar.DAY_OF_YEAR, 1 );
             alarmTime = calendar.getTimeInMillis();
-        }*/
+        }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_HOUR, pendingIntent);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY, pendingIntent);
 
         Log.d( "JAWN", "Added alarm for " + notifier.getPostalCode() + " at " + calendar.getTime() );
 

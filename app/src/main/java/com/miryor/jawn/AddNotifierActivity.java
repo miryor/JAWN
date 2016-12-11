@@ -36,24 +36,24 @@ public class AddNotifierActivity extends AppCompatActivity {
             notifier = n;
         }
         else {
-            notifier = new Notifier( 0L, "", 0, 0, 0, JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND, "" );
+            notifier = new Notifier( 0L, "", JawnContract.DOW_EVERYDAY, 0, 0, JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND, "" );
         }
-        if ( notifier.getId() > 0L ) {
-            CheckBox day = (CheckBox) findViewById(R.id.notifier_daysofweek_sunday);
-            day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_SUNDAY) == JawnContract.DOW_SUNDAY );
-            day = (CheckBox) findViewById(R.id.notifier_daysofweek_monday);
-            day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_MONDAY) == JawnContract.DOW_MONDAY );
-            day = (CheckBox) findViewById(R.id.notifier_daysofweek_tuesday);
-            day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_TUESDAY) == JawnContract.DOW_TUESDAY );
-            day = (CheckBox) findViewById(R.id.notifier_daysofweek_wednesday);
-            day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_WEDNESDAY) == JawnContract.DOW_WEDNESDAY );
-            day = (CheckBox) findViewById(R.id.notifier_daysofweek_thursday);
-            day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_THURSDAY) == JawnContract.DOW_THURSDAY );
-            day = (CheckBox) findViewById(R.id.notifier_daysofweek_friday);
-            day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_FRIDAY) == JawnContract.DOW_FRIDAY );
-            day = (CheckBox) findViewById(R.id.notifier_daysofweek_saturday);
-            day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_SATURDAY) == JawnContract.DOW_SATURDAY );
+        CheckBox day = (CheckBox) findViewById(R.id.notifier_daysofweek_sunday);
+        day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_SUNDAY) == JawnContract.DOW_SUNDAY );
+        day = (CheckBox) findViewById(R.id.notifier_daysofweek_monday);
+        day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_MONDAY) == JawnContract.DOW_MONDAY );
+        day = (CheckBox) findViewById(R.id.notifier_daysofweek_tuesday);
+        day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_TUESDAY) == JawnContract.DOW_TUESDAY );
+        day = (CheckBox) findViewById(R.id.notifier_daysofweek_wednesday);
+        day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_WEDNESDAY) == JawnContract.DOW_WEDNESDAY );
+        day = (CheckBox) findViewById(R.id.notifier_daysofweek_thursday);
+        day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_THURSDAY) == JawnContract.DOW_THURSDAY );
+        day = (CheckBox) findViewById(R.id.notifier_daysofweek_friday);
+        day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_FRIDAY) == JawnContract.DOW_FRIDAY );
+        day = (CheckBox) findViewById(R.id.notifier_daysofweek_saturday);
+        day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_SATURDAY) == JawnContract.DOW_SATURDAY );
 
+        if ( notifier.getId() > 0L ) {
             TextView time = (TextView) findViewById(R.id.notifier_time);
             time.setText( JawnContract.formatTime( n.getHour(), n.getMinute() ) );
 
@@ -70,7 +70,7 @@ public class AddNotifierActivity extends AppCompatActivity {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 TextView time = (TextView) findViewById(R.id.notifier_time);
-                time.setText( selectedHour + ":" + selectedMinute);
+                time.setText( JawnContract.formatTime( selectedHour, selectedMinute ) );
                 n.setHour(selectedHour);
                 n.setMinute(selectedMinute);
             }

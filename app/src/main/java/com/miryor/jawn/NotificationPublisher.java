@@ -38,7 +38,6 @@ public class NotificationPublisher extends WakefulBroadcastReceiver {
         Intent service = new Intent(context, WeatherNotificationIntentService.class);
         service.putExtra( Notifier.EXTRA_NAME, notifier );
         startWakefulService(context, service);
-        setResultCode(Activity.RESULT_OK);
 
         /*NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notifier notifier = (Notifier) intent.getParcelableExtra(Notifier.EXTRA_NAME);

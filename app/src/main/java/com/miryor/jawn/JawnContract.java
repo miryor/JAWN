@@ -36,6 +36,7 @@ public class JawnContract {
     public static final int DOW_THURSDAY = 16;
     public static final int DOW_FRIDAY = 32;
     public static final int DOW_SATURDAY = 64;
+    public static final int DOW_EVERYDAY = 127;
 
     public static final String DOW_ENABLED_COLOR = "#00ff00";
     public static final String DOW_DISABLED_COLOR = "#ff0000";

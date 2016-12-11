@@ -26,9 +26,7 @@
             android:label="@string/title_activity_view_hourly_forecast"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
-        <receiver android:name=".NotificationPublisher">
-
-        </receiver>
+        <receiver android:name=".NotificationPublisher"/>
         <receiver android:name=".OnBootReceiver"
             android:enabled="true">
             <intent-filter>
@@ -36,9 +34,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".WeatherNotificationIntentService">
-
-        </service>
+        <service android:name=".WeatherNotificationIntentService" />
 
     </application>
 
