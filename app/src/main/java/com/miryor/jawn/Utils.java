@@ -17,6 +17,8 @@ import java.util.Calendar;
  */
 
 public class Utils {
+    public static final String WUNDERGROUND_URL = "http://api.wunderground.com/api/502f7c0bd4a4257d/hourly/q/";
+    public static final String JSON_URL = ".json";
 
     public static void setNotificationAlarm(Context context, Notifier notifier) {
         Intent notificationIntent = new Intent(context, NotificationPublisher.class);
@@ -33,7 +35,9 @@ public class Utils {
             alarmTime = calendar.getTimeInMillis();
         }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_HOUR, pendingIntent);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY, pendingIntent);
+
+        Log.d( "JAWN", "Added alarm for " + notifier.getPostalCode() + " at " + calendar.getTime() );
 
     }
 

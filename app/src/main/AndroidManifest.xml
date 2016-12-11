@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:allowBackup="true"
@@ -20,18 +21,21 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddNotifierActivity" />
+        <activity
+            android:name=".ViewHourlyForecastActivity"
+            android:label="@string/title_activity_view_hourly_forecast"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
-        <receiver android:name=".NotificationPublisher" android:exported="true" />
+        <receiver android:name=".NotificationPublisher"/>
         <receiver android:name=".OnBootReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
             </intent-filter>
         </receiver>
-        <activity
-            android:name=".ViewHourlyForecastActivity"
-            android:label="@string/title_activity_view_hourly_forecast"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <service android:name=".WeatherNotificationIntentService" />
+
     </application>
 
 </manifest>

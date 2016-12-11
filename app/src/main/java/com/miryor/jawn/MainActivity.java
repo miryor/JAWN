@@ -79,11 +79,11 @@ public class MainActivity extends AppCompatActivity {
 
         notifierList = JawnContract.listNotifiers(this);
 
-        for ( Notifier notifier : notifierList ) {
+        /*for ( Notifier notifier : notifierList ) {
             Log.d( "JAWN", "From MainActivity setting alarm for " + notifier.getPostalCode() + " at " + notifier.getHour() + ":" + notifier.getMinute() );
             Utils.setNotificationAlarm(this, notifier);
 
-        }
+        }*/
 
         /*List<Notifier> list = new ArrayList<Notifier>();
         list.add( new Notifier(1, "12345", 1, 12, 0, true) );
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void addNotification(View view) {
         Intent intent = new Intent(this, AddNotifierActivity.class);
-        intent.putExtra( Notifier.EXTRA_NAME, new Notifier(0L, "", 0, 0, 0, JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND, "") );
+        intent.putExtra( Notifier.EXTRA_NAME, new Notifier(0L, "", JawnContract.DOW_EVERYDAY, 0, 0, JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND, "") );
         startActivityForResult(intent, Notifier.RESULT_SAVED);
     }
 

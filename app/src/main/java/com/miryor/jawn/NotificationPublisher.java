@@ -1,10 +1,13 @@
 package com.miryor.jawn;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.PowerManager;
+import android.support.v4.content.WakefulBroadcastReceiver;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
@@ -23,16 +26,20 @@ import java.util.List;
  * Created by royrim on 12/2/16.
  */
 
-public class NotificationPublisher extends BroadcastReceiver {
+public class NotificationPublisher extends WakefulBroadcastReceiver {
 
     private static final String WUNDERGROUND_URL = "http://api.wunderground.com/api/502f7c0bd4a4257d/hourly/q/";
     private static final String JSON_URL = ".json";
 
-    private Notifier notifier = null;
-
     @Override
     public void onReceive(Context context, Intent intent) {
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Notifier notifier = intent.getParcelableExtra( Notifier.EXTRA_NAME );
+        Log.d( "JAWN", "Received alarm for " + notifier.getPostalCode() );
+        Intent service = new Intent(context, WeatherNotificationIntentService.class);
+        service.putExtra( Notifier.EXTRA_NAME, notifier );
+        startWakefulService(context, service);
+
+        /*NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notifier notifier = (Notifier) intent.getParcelableExtra(Notifier.EXTRA_NAME);
 
         String provider = notifier.getProvider();
@@ -58,7 +65,7 @@ public class NotificationPublisher extends BroadcastReceiver {
         }
         else {
             Log.d( "JAWN", "Notification not set for " + calDayOfWeek );
-        }
+        }*/
     }
 
     private void notifyError(Context context, String error) {

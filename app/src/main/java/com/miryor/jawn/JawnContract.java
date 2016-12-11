@@ -26,7 +26,7 @@ public class JawnContract {
 
     public static final int NOTIFICATION_ID = 15968902;
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "JAWN.db";
 
     public static final int DOW_SUNDAY = 1;
@@ -36,6 +36,7 @@ public class JawnContract {
     public static final int DOW_THURSDAY = 16;
     public static final int DOW_FRIDAY = 32;
     public static final int DOW_SATURDAY = 64;
+    public static final int DOW_EVERYDAY = 127;
 
     public static final String DOW_ENABLED_COLOR = "#00ff00";
     public static final String DOW_DISABLED_COLOR = "#ff0000";
@@ -72,12 +73,14 @@ public class JawnContract {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            // db.execSQL(SQL_DELETE_NOTIFIER);
+            db.execSQL(SQL_DELETE_NOTIFIER);
             db.execSQL(SQL_CREATE_NOTIFIER);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            db.execSQL(SQL_DELETE_NOTIFIER);
+            db.execSQL(SQL_CREATE_NOTIFIER);
         }
     }
 
