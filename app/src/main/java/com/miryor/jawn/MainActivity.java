@@ -14,6 +14,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.miryor.jawn.model.HourlyForecast;
 import com.miryor.jawn.model.Notifier;
 
@@ -35,6 +42,7 @@ import java.util.List;
  * https://developer.android.com/studio/publish/app-signing.html
  */
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "JAWN";
 
     private static String EMOJI_SUN = "\u2600";
     private static String EMOJI_CLOUD = "\u2601";
@@ -50,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static List<Notifier> notifierList = null;
     private static NotifierArrayAdapter adapter = null;
+
+    private GoogleApiClient mGoogleApiClient;
 
     static final String[] PENS = new String[]{
             "MONT Blanc",
@@ -77,34 +87,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        checkSignin();
+    }
+
+    public void checkSignin() {
+        startActivityForResult( new Intent(this, SignInActivity.class), Utils.SIGNIN_SUCCESS );
+    }
+
+    public void displayList() {
         notifierList = JawnContract.listNotifiers(this);
-
-        /*for ( Notifier notifier : notifierList ) {
-            Log.d( "JAWN", "From MainActivity setting alarm for " + notifier.getPostalCode() + " at " + notifier.getHour() + ":" + notifier.getMinute() );
-            Utils.setNotificationAlarm(this, notifier);
-
-        }*/
-
-        /*List<Notifier> list = new ArrayList<Notifier>();
-        list.add( new Notifier(1, "12345", 1, 12, 0, true) );
-        list.add( new Notifier(2, "11233", 1, 12, 0, true) );*/
-
-
         adapter = new NotifierArrayAdapter(this, R.layout.notifier_row, notifierList);
-
-        /*ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, PENS);*/
-
         ListView listView = (ListView) findViewById(R.id.list_notifications);
         listView.setOnItemClickListener(listNotificationsClickListener);
         listView.setAdapter(adapter);
-
     }
 
     public void addNotification(View view) {
         Intent intent = new Intent(this, AddNotifierActivity.class);
         intent.putExtra( Notifier.EXTRA_NAME, new Notifier(0L, "", JawnContract.DOW_EVERYDAY, 0, 0, JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND, "") );
-        startActivityForResult(intent, Notifier.RESULT_SAVED);
+        startActivityForResult(intent, Utils.RESULT_SAVED);
     }
 
     @Override
@@ -112,16 +113,20 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d("JAWN", "onActivityResult " + resultCode );
         // Toast.makeText(this, "toast " + resultCode, Toast.LENGTH_LONG).show();
-        if ( resultCode == Notifier.RESULT_IGNORE ) {
+        if ( resultCode == Utils.RESULT_IGNORE ) {
         }
-        else if ( resultCode == Notifier.RESULT_SAVED ) {
+        else if ( resultCode == Utils.SIGNIN_SUCCESS ) {
+            // Signed in successfully, show authenticated UI.
+            displayList();
+        }
+        else if ( resultCode == Utils.RESULT_SAVED ) {
             adapter.clear();
             adapter.addAll( JawnContract.listNotifiers(this) );
             adapter.notifyDataSetChanged();
             Notifier n = (Notifier) data.getParcelableExtra( Notifier.EXTRA_NAME );
             Toast.makeText(this, "Saved " + n.getPostalCode(), Toast.LENGTH_LONG).show();
         }
-        else if ( resultCode == Notifier.RESULT_DOESNTEXIST ) {
+        else if ( resultCode == Utils.RESULT_DOESNTEXIST ) {
             Toast.makeText(this, "No forecast for this notifier yet", Toast.LENGTH_LONG).show();
         }
         else {

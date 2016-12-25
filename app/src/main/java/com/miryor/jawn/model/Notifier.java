@@ -17,11 +17,6 @@ public class Notifier implements Parcelable {
     private String forecast;
 
     public static String EXTRA_NAME = "notifier";
-    public static int RESULT_SAVED = 100;
-    public static int RESULT_CANCELLED = 200;
-    public static int RESULT_VIEWED = 101;
-    public static int RESULT_DOESNTEXIST = 102;
-    public static int RESULT_IGNORE = 300;
 
     public Notifier(long id, String postalCode, int daysOfWeek, int hour, int minute, String provider, String forecast) {
         this.id = id;

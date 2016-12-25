@@ -20,6 +20,13 @@ public class Utils {
     public static final String WUNDERGROUND_URL = "http://api.wunderground.com/api/502f7c0bd4a4257d/hourly/q/";
     public static final String JSON_URL = ".json";
 
+    public static final int RESULT_SAVED = 100;
+    public static final int RESULT_CANCELLED = 200;
+    public static final int RESULT_VIEWED = 101;
+    public static final int RESULT_DOESNTEXIST = 102;
+    public static final int RESULT_IGNORE = 300;
+    public static final int SIGNIN_SUCCESS = 500;
+
     public static void setNotificationAlarm(Context context, Notifier notifier) {
         Intent notificationIntent = new Intent(context, NotificationPublisher.class);
         notificationIntent.putExtra( Notifier.EXTRA_NAME, notifier);

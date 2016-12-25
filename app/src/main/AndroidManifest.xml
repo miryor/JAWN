@@ -20,6 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SignInActivity"
+            android:label="@string/name_sign_in_activity"
+            android:theme="@style/ThemeOverlay.MyNoTitleActivity">
+        </activity>
         <activity android:name=".AddNotifierActivity" />
         <activity
             android:name=".ViewHourlyForecastActivity"

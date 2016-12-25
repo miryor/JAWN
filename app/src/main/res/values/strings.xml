@@ -22,4 +22,12 @@
     <string name="preference_lastnotificationid">LastNotificationId</string>
     <string name="preference_jawnnotifier">JAWNNotifier</string>
 
+    <string name="desc_google_icon">Google Logo</string>
+    <string name="google_signin">Google Sign-In\nQuickstart</string>
+    <string name="signed_out">Signed out</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="signed_in_fmt">Signed in as: %s</string>
+    <string name="loading">Loading…</string>
+    <string name="name_sign_in_activity">SignInActivity</string>
 </resources>

@@ -60,7 +60,7 @@ public class ViewHourlyForecastActivity extends AppCompatActivity {
         if ( provider.length() == 0 || forecast.length() == 0 ) {
             Intent goback = new Intent();
             goback.putExtra( Notifier.EXTRA_NAME, notifier );
-            setResult(Notifier.RESULT_DOESNTEXIST, goback);
+            setResult(Utils.RESULT_DOESNTEXIST, goback);
             finish();
         }
         else {
@@ -79,7 +79,7 @@ public class ViewHourlyForecastActivity extends AppCompatActivity {
 
             Intent goback = new Intent();
             goback.putExtra( Notifier.EXTRA_NAME, notifier );
-            setResult(Notifier.RESULT_IGNORE, goback);
+            setResult(Utils.RESULT_IGNORE, goback);
         }
 
     }

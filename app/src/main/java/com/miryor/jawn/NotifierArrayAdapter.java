@@ -166,7 +166,7 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ViewHourlyForecastActivity.class);
                     intent.putExtra(Notifier.EXTRA_NAME, n);
-                    ((Activity) context).startActivityForResult(intent, Notifier.RESULT_DOESNTEXIST);
+                    ((Activity) context).startActivityForResult(intent, Utils.RESULT_DOESNTEXIST);
                 }
             });
 

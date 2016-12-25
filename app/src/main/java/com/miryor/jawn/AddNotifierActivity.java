@@ -80,7 +80,7 @@ public class AddNotifierActivity extends AppCompatActivity {
     }
 
     public void cancelNotifier(View view) {
-        setResult(Notifier.RESULT_CANCELLED);
+        setResult(Utils.RESULT_CANCELLED);
         finish();
     }
 
@@ -93,7 +93,7 @@ public class AddNotifierActivity extends AppCompatActivity {
 
         Intent intent = new Intent();
         intent.putExtra( Notifier.EXTRA_NAME, notifier );
-        setResult(Notifier.RESULT_SAVED, intent);
+        setResult(Utils.RESULT_SAVED, intent);
         finish();
     }
 
