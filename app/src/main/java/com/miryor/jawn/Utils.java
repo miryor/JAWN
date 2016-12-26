@@ -26,6 +26,7 @@ public class Utils {
     public static final int RESULT_DOESNTEXIST = 102;
     public static final int RESULT_IGNORE = 300;
     public static final int SIGNIN_SUCCESS = 500;
+    public static final int SIGNIN_CANCEL = 600;
 
     public static void setNotificationAlarm(Context context, Notifier notifier) {
         Intent notificationIntent = new Intent(context, NotificationPublisher.class);

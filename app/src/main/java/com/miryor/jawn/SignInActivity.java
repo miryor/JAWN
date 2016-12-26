@@ -56,11 +56,16 @@ public class SignInActivity extends AppCompatActivity implements
     private GoogleApiClient mGoogleApiClient;
     private TextView mStatusTextView;
     private ProgressDialog mProgressDialog;
+    private Boolean test = Boolean.FALSE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signin);
+
+        Intent intent = getIntent();
+        test = intent.getBooleanExtra("test", Boolean.FALSE);
+        setResult(Utils.SIGNIN_CANCEL);
 
         // Views
         mStatusTextView = (TextView) findViewById(R.id.status);
@@ -141,8 +146,13 @@ public class SignInActivity extends AppCompatActivity implements
             GoogleSignInAccount acct = result.getSignInAccount();
             mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             updateUI(true);
-            setResult(Utils.SIGNIN_SUCCESS);
-            finish();
+            if ( test ) {
+                test = Boolean.FALSE;
+            }
+            else {
+                setResult(Utils.SIGNIN_SUCCESS);
+                finish();
+            }
         } else {
             // Signed out, show unauthenticated UI.
             updateUI(false);
