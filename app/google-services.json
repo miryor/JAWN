@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "553947772785",
+    "project_id": "jawn-152217"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:553947772785:android:070879fee5bc1463",
+        "android_client_info": {
+          "package_name": "com.miryor.jawn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "553947772785-jlju5q7bq22vvacq8mf87f8uppo34pkb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.miryor.jawn",
+            "certificate_hash": "9F9BDDDF9AC0CF29869DEB1E397630C5DD92EB29"
+          }
+        },
+        {
+          "client_id": "553947772785-qo74k09te1bjujd4pompbpih66pigjrf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSC588tHdndQmjnPoZZAnKewXx9H-UR0M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
