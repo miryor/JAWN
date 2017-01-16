@@ -42,6 +42,7 @@ public class JawnContract {
     public static final String DOW_DISABLED_COLOR = "#ff0000";
 
     public static final String WEATHER_API_PROVIDER_WUNDERGROUND = "WUNDERGROUND";
+    public static final String WEATHER_API_PROVIDER_JAWNREST = "JAWNREST";
 
     public static class JawnNotifier implements BaseColumns {
         public static final String TABLE_NAME = "notifier";
@@ -135,6 +136,7 @@ public class JawnContract {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL( JawnNotifierDbHelper.SQL_DELETE_NOTIFIER );
         db.close();
+        db = dbHelper.getWritableDatabase();
         dbHelper.onCreate(db);
     }
 

@@ -24,9 +24,13 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "JAWN_REST_URL", '"https://jawn-rest.herokuapp.com/hourlyForecast"'
+            buildConfigField "String", "JAWN_REST_VERSION", '"0.1"'
         }
         debug {
             signingConfig signingConfigs.key
+            buildConfigField "String", "JAWN_REST_URL", '"http://localhost:5000/hourlyForecast"'
+            buildConfigField "String", "JAWN_REST_VERSION", '"0.1"'
         }
     }
     testOptions {

@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void addNotification(View view) {
         Intent intent = new Intent(this, AddNotifierActivity.class);
-        intent.putExtra( Notifier.EXTRA_NAME, new Notifier(0L, "", JawnContract.DOW_EVERYDAY, 0, 0, JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND, "") );
+        intent.putExtra( Notifier.EXTRA_NAME, new Notifier(0L, "", JawnContract.DOW_EVERYDAY, 0, 0, JawnContract.WEATHER_API_PROVIDER_JAWNREST, "") );
         startActivityForResult(intent, Utils.RESULT_SAVED);
     }
 

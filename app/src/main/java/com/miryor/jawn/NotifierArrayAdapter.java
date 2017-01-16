@@ -153,6 +153,15 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
                                 Utils.sendNotification(context, builder.toString());
                                 Toast.makeText(context, "Sent notification", Toast.LENGTH_LONG).show();
                             }
+                            else if ( provider.equals(JawnContract.WEATHER_API_PROVIDER_JAWNREST) ) {
+                                WeatherJsonParser parser = new JawnRestWeatherJsonParser(forecast);
+                                List<HourlyForecast> list = parser.parseHourlyForecast();
+                                for (HourlyForecast hf : list) {
+                                    JawnContract.formatForecastForNotification(builder, hf);
+                                }
+                                Utils.sendNotification(context, builder.toString());
+                                Toast.makeText(context, "Sent notification", Toast.LENGTH_LONG).show();
+                            }
                         } catch ( Exception e ) {
                             Log.e("JAWN", "Error parsing forecast", e);
                             Toast.makeText(context, "Error sending notification", Toast.LENGTH_LONG).show();

@@ -50,17 +50,20 @@ public class WeatherNotificationIntentService extends IntentService {
                         ( calDayOfWeek == Calendar.FRIDAY && JawnContract.isDayOfWeek( dow, JawnContract.DOW_FRIDAY ) ) ||
                         ( calDayOfWeek == Calendar.SATURDAY && JawnContract.isDayOfWeek( dow, JawnContract.DOW_SATURDAY ) )
                 ){
-            if (provider.equals(JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND)) {
-                Log.d("JAWN", "Getting weather from: " + Utils.WUNDERGROUND_URL + zipCode + Utils.JSON_URL);
+            if (
+                    provider.equals(JawnContract.WEATHER_API_PROVIDER_JAWNREST) ||
+                    provider.equals(JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND)
+            ) {
                 try {
-                    String result = loadJsonFromNetwork(this, notifier, Utils.WUNDERGROUND_URL + zipCode + Utils.JSON_URL);
+                    String result = loadJsonFromNetwork(this, notifier, provider, zipCode);
                     Utils.sendNotification(this, result);
                 }
                 catch (IOException e) {
                     Log.e( "JAWN", getResources().getString(R.string.connection_error), e );
                     Utils.sendNotification(this, getResources().getString(R.string.connection_error));
                 }
-            } else {
+            }
+            else {
                 Utils.sendNotification(this, "Wrong provider set: " + provider + ", could not download weather");
             }
         }
@@ -71,8 +74,12 @@ public class WeatherNotificationIntentService extends IntentService {
         NotificationPublisher.completeWakefulIntent(intent);
     }
 
-    private String loadJsonFromNetwork(Context context, Notifier notifier, String url) throws IOException {
-        WundergroundWeatherJsonGrabber g = new WundergroundWeatherJsonGrabber(url);
+    private String loadJsonFromNetwork(Context context, Notifier notifier, String provider, String location) throws IOException {
+        WeatherJsonGrabber g = null;
+
+        if ( provider.equals(JawnContract.WEATHER_API_PROVIDER_JAWNREST) ) g = new JawnRestWeatherJsonGrabber(location);
+        else g = new WundergroundWeatherJsonGrabber(location);
+
         BufferedReader reader = null;
         StringBuilder builder = new StringBuilder();
         try {
@@ -89,7 +96,11 @@ public class WeatherNotificationIntentService extends IntentService {
         String forecast = builder.toString();
         notifier.setForecast( forecast );
         JawnContract.updateNotifierForecast(context, notifier);
-        WundergroundWeatherJsonParser p = new WundergroundWeatherJsonParser( forecast );
+
+        WeatherJsonParser p = null;
+        if ( provider.equals(JawnContract.WEATHER_API_PROVIDER_JAWNREST) ) p = new JawnRestWeatherJsonParser( forecast );
+        else p = new WundergroundWeatherJsonParser( forecast );
+
         List<HourlyForecast> list = p.parseHourlyForecast();
         builder = new StringBuilder();
         for ( HourlyForecast hf : list ) {

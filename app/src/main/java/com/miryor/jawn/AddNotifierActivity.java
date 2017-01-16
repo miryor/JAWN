@@ -36,7 +36,7 @@ public class AddNotifierActivity extends AppCompatActivity {
             notifier = n;
         }
         else {
-            notifier = new Notifier( 0L, "", JawnContract.DOW_EVERYDAY, 0, 0, JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND, "" );
+            notifier = new Notifier( 0L, "", JawnContract.DOW_EVERYDAY, 0, 0, JawnContract.WEATHER_API_PROVIDER_JAWNREST, "" );
         }
         CheckBox day = (CheckBox) findViewById(R.id.notifier_daysofweek_sunday);
         day.setChecked( (notifier.getDaysOfWeek() & JawnContract.DOW_SUNDAY) == JawnContract.DOW_SUNDAY );

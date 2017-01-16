@@ -47,7 +47,7 @@ public class ViewHourlyForecastActivity extends AppCompatActivity {
             notifier = n;
         }
         else {
-            notifier = new Notifier( 0L, "", 0, 0, 0, JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND, "" );
+            notifier = new Notifier( 0L, "", 0, 0, 0, JawnContract.WEATHER_API_PROVIDER_JAWNREST, "" );
         }
 
         // reload notifier in case we got new info

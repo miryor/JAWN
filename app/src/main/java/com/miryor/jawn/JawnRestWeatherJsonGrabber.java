@@ -8,21 +8,22 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by royrim on 11/22/16.
+ * Created by royrim on 1/15/17.
  */
 
-public class WundergroundWeatherJsonGrabber implements WeatherJsonGrabber {
-    public static final String WUNDERGROUND_URL = "http://api.wunderground.com/api/502f7c0bd4a4257d/hourly/q/";
+public class JawnRestWeatherJsonGrabber implements WeatherJsonGrabber {
+    private static String URL = BuildConfig.JAWN_REST_URL;
+    private static String VERSION = BuildConfig.JAWN_REST_VERSION;
 
     String location;
 
-    public WundergroundWeatherJsonGrabber(String url) {
+    public JawnRestWeatherJsonGrabber(String location) {
         this.location = location;
     }
 
     public InputStream getWeatherJsonInputStream() throws IOException {
-        Log.d("JAWN", "Getting weather from: " + WUNDERGROUND_URL + location + Utils.JSON_URL );
-        URL url = new URL(WUNDERGROUND_URL + location + Utils.JSON_URL);
+        Log.d("JAWN", "Getting weather from: " + URL + "?location=" + location + "&version=" + VERSION );
+        URL url = new URL(URL + "?location=" + location + "&version=" + VERSION );
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(10000 /* milliseconds */);
         conn.setConnectTimeout(30000 /* milliseconds */);
