@@ -72,58 +72,5 @@ public class NotificationPublisher extends WakefulBroadcastReceiver {
         Utils.sendNotification(context, error);
     }
 
-    private class DownloadWeatherTask extends AsyncTask<String, Void, String> {
-        Context context;
-        Notifier notifier;
-        private DownloadWeatherTask( Context context, Notifier notifier ) {
-            this.context = context;
-            this.notifier = notifier;
-        }
-
-        @Override
-        protected String doInBackground(String... urls) {
-            try {
-                return loadJsonFromNetwork(context, notifier, urls[0]);
-            }
-            catch (IOException e) {
-                Log.e( "JAWN", context.getResources().getString(R.string.connection_error), e );
-                return context.getResources().getString(R.string.connection_error);
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Utils.sendNotification(context, result);
-        }
-    }
-
-
-    private String loadJsonFromNetwork(Context context, Notifier notifier, String url) throws IOException {
-        WundergroundWeatherJsonGrabber g = new WundergroundWeatherJsonGrabber(url);
-        BufferedReader reader = null;
-        StringBuilder builder = new StringBuilder();
-        try {
-            reader = new BufferedReader(new InputStreamReader(g.getWeatherJsonInputStream(), "UTF-8"));
-            char[] chars = new char[1024];
-            int len;
-            while ((len = reader.read(chars)) != -1) {
-                builder.append(chars, 0, len);
-            }
-        }
-        finally {
-            if ( reader != null ) try { reader.close(); } catch ( IOException e ) {}
-        }
-        String forecast = builder.toString();
-        notifier.setForecast( forecast );
-        JawnContract.updateNotifierForecast(context, notifier);
-        WundergroundWeatherJsonParser p = new WundergroundWeatherJsonParser( forecast );
-        List<HourlyForecast> list = p.parseHourlyForecast();
-        builder = new StringBuilder();
-        for ( HourlyForecast hf : list ) {
-            if ( builder.length() > 0 ) builder.append( ", " );
-            JawnContract.formatForecastForNotification(builder, hf);
-        }
-        return builder.toString();
-    }
 
 }

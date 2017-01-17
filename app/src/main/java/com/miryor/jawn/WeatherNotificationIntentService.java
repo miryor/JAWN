@@ -76,7 +76,6 @@ public class WeatherNotificationIntentService extends IntentService {
 
     private String loadJsonFromNetwork(Context context, Notifier notifier, String provider, String location) throws IOException {
         WeatherJsonGrabber g = null;
-
         if ( provider.equals(JawnContract.WEATHER_API_PROVIDER_JAWNREST) ) g = new JawnRestWeatherJsonGrabber(location);
         else g = new WundergroundWeatherJsonGrabber(location);
 
