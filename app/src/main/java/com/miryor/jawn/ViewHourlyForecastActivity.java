@@ -65,18 +65,20 @@ public class ViewHourlyForecastActivity extends AppCompatActivity {
         if ( provider == null ) provider = "";
         if ( forecast == null ) forecast = "";
 
-        if ( provider.length() == 0 ) {
+        if ( provider.length() == 0 || forecast.length() == 0 ) {
             Intent goback = new Intent();
             goback.putExtra( Notifier.EXTRA_NAME, notifier );
             setResult(Utils.RESULT_DOESNTEXIST, goback);
             finish();
         }
-        else if ( forecast.length() == 0 ) {
-            new DownloadWeatherTask(getApplicationContext()).execute( provider, notifier.getPostalCode() );
-        }
+        /*else if ( forecast.length() == 0 ) {
+            new DownloadWeatherTask(this).execute( provider, notifier.getPostalCode() );
+        }*/
         else {
             List<HourlyForecast> list = null;
-            WeatherJsonParser parser = new WundergroundWeatherJsonParser(forecast);
+            WeatherJsonParser parser = null;
+            if ( provider.equals( JawnContract.WEATHER_API_PROVIDER_JAWNREST ) ) parser = new JawnRestWeatherJsonParser(forecast);
+            else parser = new WundergroundWeatherJsonParser(forecast);
             try {
                 list = parser.parseHourlyForecast();
             } catch (IOException e) {
@@ -94,7 +96,7 @@ public class ViewHourlyForecastActivity extends AppCompatActivity {
 
     }
 
-    private class DownloadWeatherTask extends AsyncTask<String, Void, List<HourlyForecast>> {
+    /*private class DownloadWeatherTask extends AsyncTask<String, Void, List<HourlyForecast>> {
         Context context;
         private DownloadWeatherTask( Context context ) {
             this.context = context;
@@ -103,10 +105,10 @@ public class ViewHourlyForecastActivity extends AppCompatActivity {
         @Override
         protected List<HourlyForecast> doInBackground(String... strings) {
             try {
-                loadJsonFromNetwork(strings[0], strings[1]);
+                return loadJsonFromNetwork(strings[0], strings[1]);
             }
             catch (IOException e) {
-                Log.e( "JAWN", getResources().getString(R.string.connection_error) );
+                Log.e( "JAWN", getResources().getString(R.string.connection_error), e );
             }
 
             return new ArrayList<HourlyForecast>();
@@ -114,6 +116,7 @@ public class ViewHourlyForecastActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(List<HourlyForecast> list) {
+            Log.d("JAWN", "hourly forecast size: " + list.size());
             adapter = new HourlyForecastArrayAdapter(context, R.layout.forecast_row, list);
             ListView listView = (ListView) findViewById(R.id.list_hourlyforecasts);
             listView.setAdapter(adapter);
@@ -135,7 +138,7 @@ public class ViewHourlyForecastActivity extends AppCompatActivity {
 
         List<HourlyForecast> list = p.parseHourlyForecast();
         return list;
-    }
+    }*/
 
 
 }

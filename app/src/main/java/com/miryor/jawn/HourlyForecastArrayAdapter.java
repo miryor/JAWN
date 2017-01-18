@@ -2,6 +2,7 @@ package com.miryor.jawn;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ public class HourlyForecastArrayAdapter extends ArrayAdapter<HourlyForecast> {
         final HourlyForecast hf = getItem(position);
 
         if (row == null) {
+            Log.d("JAWN", hf.getHour() + " " + hf.getCondition() );
             LayoutInflater inflator = ((Activity) context).getLayoutInflater();
             row = inflator.inflate(layoutResourceId, parent, false);
 

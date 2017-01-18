@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         notifierList = JawnContract.listNotifiers(this);
         adapter = new NotifierArrayAdapter(this, R.layout.notifier_row, notifierList);
         ListView listView = (ListView) findViewById(R.id.list_notifications);
-        listView.setOnItemClickListener(listNotificationsClickListener);
+        //listView.setOnItemClickListener(listNotificationsClickListener);
         listView.setAdapter(adapter);
     }
 
@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /*
     private AdapterView.OnItemClickListener listNotificationsClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView parent, View v, int position, long id) {
         Object o = parent.getItemAtPosition(position);
@@ -205,6 +206,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return builder.toString();
     }
-
+    */
 
 }
