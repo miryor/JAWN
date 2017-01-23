@@ -30,7 +30,7 @@ public class Utils {
 
     public static void setNotificationAlarm(Context context, Notifier notifier) {
         Intent notificationIntent = new Intent(context, NotificationPublisher.class);
-        notificationIntent.putExtra( Notifier.EXTRA_NAME, notifier);
+        notificationIntent.setAction(Notifier.EXTRA_NAME).putExtra( Notifier.EXTRA_NAME, notifier);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int)notifier.getId(), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar calendar = Calendar.getInstance();
@@ -45,7 +45,7 @@ public class Utils {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY, pendingIntent);
 
-        Log.d( "JAWN", "Added alarm for " + notifier.getPostalCode() + " at " + calendar.getTime() );
+        Log.d( "JAWN", "Added alarm for " + notifier.getId() + "/" + notifier.getPostalCode() + " at " + calendar.getTime() );
 
     }
 

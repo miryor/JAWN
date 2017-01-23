@@ -56,6 +56,7 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
     }
 
     public void cancelNotifierAlarm(Notifier notifier) {
+        Log.d( "JAWN", "Cancel alarm for " + notifier.getId() + "/" + notifier.getPostalCode() );
         Intent notificationIntent = new Intent(context, NotificationPublisher.class);
         notificationIntent.putExtra( Notifier.EXTRA_NAME, notifier );
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int)notifier.getId(), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);

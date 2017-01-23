@@ -13,7 +13,7 @@ import java.net.URL;
 
 public class JawnRestWeatherJsonGrabber implements WeatherJsonGrabber {
     private static String URL = BuildConfig.JAWN_REST_URL;
-    private static String VERSION = BuildConfig.JAWN_REST_VERSION;
+    private static String VERSION = BuildConfig.VERSION_NAME;
 
     String location;
 

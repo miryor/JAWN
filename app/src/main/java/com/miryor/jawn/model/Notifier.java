@@ -16,7 +16,7 @@ public class Notifier implements Parcelable {
     private String provider;
     private String forecast;
 
-    public static String EXTRA_NAME = "notifier";
+    public static String EXTRA_NAME = "com.miryor.jawn.Notifier";
 
     public Notifier(long id, String postalCode, int daysOfWeek, int hour, int minute, String provider, String forecast) {
         this.id = id;

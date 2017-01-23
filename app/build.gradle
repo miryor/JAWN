@@ -1,9 +1,8 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.3"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.1"
     signingConfigs{
         key{
             keyAlias 'jawn'
@@ -25,12 +24,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "JAWN_REST_URL", '"https://jawn-rest.herokuapp.com/hourlyForecast"'
-            buildConfigField "String", "JAWN_REST_VERSION", '"0.1"'
         }
         debug {
             signingConfig signingConfigs.key
             buildConfigField "String", "JAWN_REST_URL", '"http://10.0.2.2:5000/hourlyForecast"'
-            buildConfigField "String", "JAWN_REST_VERSION", '"0.1"'
         }
     }
     testOptions {
@@ -46,9 +43,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.android.support:design:24.2.1'
-    compile 'com.google.android.gms:play-services:9.0.0'
+    compile 'com.google.android.gms:play-services-auth:10.0.1'
 
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.json:json:20140107'
 }
+
+apply plugin: 'com.google.gms.google-services'
