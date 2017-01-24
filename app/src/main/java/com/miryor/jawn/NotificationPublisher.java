@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.support.v7.app.NotificationCompat;
@@ -33,7 +34,9 @@ public class NotificationPublisher extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Notifier notifier = intent.getParcelableExtra( Notifier.EXTRA_NAME );
+        Bundle hackBundle = intent.getBundleExtra("hackBundle");
+        Notifier notifier = hackBundle.getParcelable(Notifier.EXTRA_NAME);
+        //Notifier notifier = intent.getParcelableExtra( Notifier.EXTRA_NAME );
         Log.d( "JAWN", "Received alarm for " + notifier.getPostalCode() );
         Intent service = new Intent(context, WeatherNotificationIntentService.class);
         service.putExtra( Notifier.EXTRA_NAME, notifier );

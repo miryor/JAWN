@@ -89,7 +89,7 @@ public class AddNotifierActivity extends AppCompatActivity {
         long id = JawnContract.saveNotifier( this, notifier );
         notifier.setId(id);
 
-        Utils.setNotificationAlarm(this, notifier);
+        Utils.setNotificationAlarm(getApplicationContext(), notifier);
 
         Intent intent = new Intent();
         intent.putExtra( Notifier.EXTRA_NAME, notifier );
