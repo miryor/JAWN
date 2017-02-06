@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">JAWN</string>
+    <string name="app_name">JAWN-prototype</string>
     <string name="label_hourlyforecast">Hourly Forecast</string>
     <string name="button_add_notification">Add Notification</string>
     <string name="activity_add_notification">Add Notification</string>

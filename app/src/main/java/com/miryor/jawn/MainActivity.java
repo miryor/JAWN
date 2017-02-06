@@ -11,6 +11,7 @@ import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -35,11 +36,18 @@ public class MainActivity extends AppCompatActivity {
     private static String EMOJI_CLOUD = "\u2601";
     private static String EMOJI_SUN_BEHIND_CLOUD = "\u26C5";
     private static String EMOJI_CLOUD_LIGHTNING_RAIN = "\u26C8";
-    /*
+
+    public static String EMOJI_SNOWFLAKE = "\u2744";
+    public static String EMOJI_SNOWMAN = "\u26C4";
     private static String EMOJI_CLOUD_SNOW = "\uD83C\uDF28";
     private static String EMOJI_CLOUD_RAIN = "\uD83C\uDF27";
     private static String EMOJI_SUN_BEHIND_RAIN_CLOUD = "\uD83C\uDF26";
-    */
+
+    public static String EMOJI_CRESCENTMOON = "\uD83C\uDF19";
+    public static String EMOJI_NIGHTSKY = "\uD83C\uDF03";
+    public static String EMOJI_CITYDUSK = "\uD83C\uDF06";
+    public static String EMOJI_MILKYWAY = "\uD83C\uDF0C";
+
     private static final String WUNDERGROUND_URL = "http://http://api.wunderground.com/api/502f7c0bd4a4257d/hourly/q/";
     private static final String JSON_URL = ".json";
 
@@ -47,19 +55,13 @@ public class MainActivity extends AppCompatActivity {
     private static NotifierArrayAdapter adapter = null;
 
     static final String[] PENS = new String[]{
-            "MONT Blanc",
-            "Gucci ",
-            "Parker",
-            "Sailor",
-            "Porsche Design",
-            "Rotring",
-            "Sheaffer",
-            "Waterman",
             EMOJI_SUN + " " + EMOJI_CLOUD + " " +
                 EMOJI_SUN_BEHIND_CLOUD + " " + EMOJI_CLOUD_LIGHTNING_RAIN,
-            /*EMOJI_CLOUD_LIGHTNING_RAIN + " " + EMOJI_CLOUD_SNOW + " " +
-                    EMOJI_CLOUD_RAIN + " " + EMOJI_SUN_BEHIND_RAIN_CLOUD
-            */
+            EMOJI_SNOWFLAKE + " " + EMOJI_SNOWMAN + " " + EMOJI_CLOUD_SNOW + " " +
+                    EMOJI_CLOUD_RAIN + " " + EMOJI_SUN_BEHIND_RAIN_CLOUD,
+            EMOJI_CRESCENTMOON + " " + EMOJI_NIGHTSKY + " " +
+                    EMOJI_CITYDUSK + " " + EMOJI_MILKYWAY
+
     };
 
 
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        notifierList = JawnContract.listNotifiers(this);
+        //notifierList = JawnContract.listNotifiers(this);
 
         /*for ( Notifier notifier : notifierList ) {
             Log.d( "JAWN", "From MainActivity setting alarm for " + notifier.getPostalCode() + " at " + notifier.getHour() + ":" + notifier.getMinute() );
@@ -85,10 +87,10 @@ public class MainActivity extends AppCompatActivity {
         list.add( new Notifier(2, "11233", 1, 12, 0, true) );*/
 
 
-        adapter = new NotifierArrayAdapter(this, R.layout.notifier_row, notifierList);
+        //adapter = new NotifierArrayAdapter(this, R.layout.notifier_row, notifierList);
 
-        /*ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, PENS);*/
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, PENS);
 
         ListView listView = (ListView) findViewById(R.id.list_notifications);
         listView.setOnItemClickListener(listNotificationsClickListener);
@@ -129,9 +131,9 @@ public class MainActivity extends AppCompatActivity {
         Object o = parent.getItemAtPosition(position);
         String pen = o.toString();
 
-        Toast.makeText(parent.getContext(), "You have chosen the pen: " + pen, Toast.LENGTH_LONG).show();
-
-        new DownloadWeatherTask(parent.getContext()).execute( WUNDERGROUND_URL + "11233" + JSON_URL );
+        Toast.makeText(parent.getContext(), pen, Toast.LENGTH_LONG).show();
+        Utils.sendNotification(parent.getContext(), pen);
+        //new DownloadWeatherTask(parent.getContext()).execute( WUNDERGROUND_URL + "11233" + JSON_URL );
 
 
         }
