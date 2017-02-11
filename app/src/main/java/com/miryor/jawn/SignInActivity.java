@@ -80,7 +80,7 @@ public class SignInActivity extends AppCompatActivity implements
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
-                //.requestIdToken(getString(R.string.server_client_id))
+                .requestIdToken(getString(R.string.server_client_id))
                 .build();
         // [END configure_signin]
 

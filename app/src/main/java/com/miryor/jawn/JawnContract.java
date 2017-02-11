@@ -306,7 +306,7 @@ public class JawnContract {
         return n;
     }
 
-    public static String getEmoji(String condition) {
+    public static String getEmoji(String condition, int hour) {
         String emoji = WeatherJsonParser.EMOJI_QUESTION;
         for ( int x = 0; x < WeatherJsonParser.STORM_WORDS.length; x++ ) {
             if ( condition.indexOf( WeatherJsonParser.STORM_WORDS[x] ) >= 0 ) {
@@ -322,7 +322,7 @@ public class JawnContract {
         }
         for ( int x = 0; x < WeatherJsonParser.SNOW_WORDS.length; x++ ) {
             if ( condition.indexOf( WeatherJsonParser.SNOW_WORDS[x] ) >= 0 ) {
-                emoji = WeatherJsonParser.EMOJI_SNOWFLAKE;
+                emoji = WeatherJsonParser.EMOJI_SNOWMAN;
                 return emoji;
             }
         }
@@ -340,7 +340,8 @@ public class JawnContract {
         }
         for (int x = 0; x < WeatherJsonParser.CLEAR_WORDS.length; x++) {
             if (condition.indexOf(WeatherJsonParser.CLEAR_WORDS[x]) >= 0) {
-                emoji = " ";
+                if ( hour >= 6 && hour <= 18 ) emoji = WeatherJsonParser.EMOJI_SUN;
+                else emoji = WeatherJsonParser.EMOJI_NIGHTSKY;
                 return emoji;
             }
         }
@@ -349,7 +350,7 @@ public class JawnContract {
 
     public static void formatForecastForNotification( StringBuilder builder, HourlyForecast hf ) {
         String condition = hf.getCondition().toLowerCase();
-        builder.append( getEmoji(condition) );
+        builder.append( getEmoji(condition, hf.getHour()) );
         builder.append( " " );
         builder.append( hf.getHour() );
         builder.append( "H " );

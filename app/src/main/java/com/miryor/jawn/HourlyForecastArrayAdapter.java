@@ -66,7 +66,7 @@ public class HourlyForecastArrayAdapter extends ArrayAdapter<HourlyForecast> {
             holder = (ViewHolder)row.getTag();
         }
 
-        holder.emoji.setText( JawnContract.getEmoji( hf.getCondition().toLowerCase() ) );
+        holder.emoji.setText( JawnContract.getEmoji( hf.getCondition().toLowerCase(), hf.getHour() ) );
         holder.time.setText( hf.getHourPadded() + ":" + hf.getMinPadded() );
         holder.temp.setText( hf.getTempF() + "°" );
         holder.feelsLike.setText( hf.getFeelsLikeF() + "°" );

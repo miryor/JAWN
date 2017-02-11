@@ -72,7 +72,9 @@ public class Utils {
 
     public static String getTokenId(Context context) {
         SharedPreferences p = context.getSharedPreferences( context.getString(R.string.preference_jawnnotifier), Context.MODE_PRIVATE );
-        return p.getString(context.getString(R.string.preference_tokenid), "");
+        String tokenId = p.getString(context.getString(R.string.preference_tokenid), "");
+        Log.d("JAWN", "Getting tokenId = " + tokenId);
+        return tokenId;
     }
 
     public static void setTokenId(Context context, String tokenId) {
@@ -80,5 +82,6 @@ public class Utils {
         SharedPreferences.Editor e = p.edit();
         e.putString(context.getString(R.string.preference_tokenid), tokenId);
         e.commit();
+        Log.d("JAWN", "Setting tokenId = " + tokenId);
     }
 }
