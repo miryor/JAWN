@@ -29,7 +29,7 @@ public class JawnRestWeatherJsonGrabber implements WeatherJsonGrabber {
         URL url = new URL(URL + "?token=" + Utils.getTokenId(context) + "&location=" + location + "&version=" + VERSION );
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(10000 /* milliseconds */);
-        conn.setConnectTimeout(30000 /* milliseconds */);
+        conn.setConnectTimeout(60000 /* milliseconds */);
         conn.setRequestMethod("GET");
         conn.setDoInput(true);
         conn.connect();
