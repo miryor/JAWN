@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2017.
+ *
+ * JAWN is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.miryor.jawn;
 
 import android.app.IntentService;
@@ -5,8 +22,17 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.miryor.jawn.model.HourlyForecast;
 import com.miryor.jawn.model.Notifier;
 
@@ -31,52 +57,106 @@ public class WeatherNotificationIntentService extends IntentService {
 
         Log.d( "JAWN", "onHandleIntent " + intent.getClass().getName() );
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        Notifier notifier = (Notifier) intent.getParcelableExtra(Notifier.EXTRA_NAME);
+        // [START configure_signin]
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestIdToken(getString(R.string.server_client_id))
+                .build();
+        // [END configure_signin]
 
-        Log.d( "JAWN", "WeatherNotificationIntentService to get weather for " + notifier.getPostalCode() );
+        // [START build_client]
+        // Build a GoogleApiClient with access to the Google Sign-In API and the
+        // options specified by gso.
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+        // [END build_client]
 
-        String provider = notifier.getProvider();
-        String zipCode = notifier.getPostalCode();
-        int dow = notifier.getDaysOfWeek();
-        Calendar cal = Calendar.getInstance();
-        int calDayOfWeek = cal.get( Calendar.DAY_OF_WEEK );
-        if (
-                ( calDayOfWeek == Calendar.SUNDAY && JawnContract.isDayOfWeek( dow, JawnContract.DOW_SUNDAY ) ) ||
-                        ( calDayOfWeek == Calendar.MONDAY && JawnContract.isDayOfWeek( dow, JawnContract.DOW_MONDAY ) ) ||
-                        ( calDayOfWeek == Calendar.TUESDAY && JawnContract.isDayOfWeek( dow, JawnContract.DOW_TUESDAY ) ) ||
-                        ( calDayOfWeek == Calendar.WEDNESDAY && JawnContract.isDayOfWeek( dow, JawnContract.DOW_WEDNESDAY ) ) ||
-                        ( calDayOfWeek == Calendar.THURSDAY && JawnContract.isDayOfWeek( dow, JawnContract.DOW_THURSDAY ) ) ||
-                        ( calDayOfWeek == Calendar.FRIDAY && JawnContract.isDayOfWeek( dow, JawnContract.DOW_FRIDAY ) ) ||
-                        ( calDayOfWeek == Calendar.SATURDAY && JawnContract.isDayOfWeek( dow, JawnContract.DOW_SATURDAY ) )
-                ){
-            if (
-                    provider.equals(JawnContract.WEATHER_API_PROVIDER_JAWNREST) ||
-                    provider.equals(JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND)
-            ) {
-                try {
-                    String result = loadJsonFromNetwork(this, notifier, provider, zipCode);
-                    Utils.sendNotification(this, result);
-                }
-                catch (IOException e) {
-                    Log.e( "JAWN", getResources().getString(R.string.connection_error), e );
-                    Utils.sendNotification(this, getResources().getString(R.string.connection_error));
-                }
+        try {
+            Log.d("JAWN", "Connecting to Google API");
+            ConnectionResult result = mGoogleApiClient.blockingConnect();
+            if (result.isSuccess()) {
+                GoogleSignInResult googleSignInResult =
+                        Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient).await();
+                handleSignInResult(googleSignInResult, intent);
             }
             else {
-                Utils.sendNotification(this, "Wrong provider set: " + provider + ", could not download weather");
+                Log.e("JAWN", "Could not connect to Google API " + result.getErrorCode() + ": " + result.getErrorMessage());
             }
+        } finally {
+            mGoogleApiClient.disconnect();
+        }
+
+        /*OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+        if (!opr.isDone()) {
+            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                                      @Override
+                                      public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
+                                          handleSignInResult(googleSignInResult, intent);
+                                      }
+                                  }
+            );
         }
         else {
-            Log.d( "JAWN", "Notification not set for " + calDayOfWeek );
+            handleSignInResult(opr.get(), intent);
+        }*/
+
+    }
+
+    private void handleSignInResult(GoogleSignInResult singInResult, Intent intent) {
+        if (!singInResult.isSuccess()) {
+            Utils.sendNotification(this, "You are not signed in.");
+        }
+        else {
+            GoogleSignInAccount acct = singInResult.getSignInAccount();
+            String token = acct.getIdToken();
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            Notifier notifier = (Notifier) intent.getParcelableExtra(Notifier.EXTRA_NAME);
+
+            Log.d("JAWN", "WeatherNotificationIntentService to get weather for " + notifier.getPostalCode());
+
+            String provider = notifier.getProvider();
+            String zipCode = notifier.getPostalCode();
+            int dow = notifier.getDaysOfWeek();
+            Calendar cal = Calendar.getInstance();
+            int calDayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+            if (
+                    (calDayOfWeek == Calendar.SUNDAY && JawnContract.isDayOfWeek(dow, JawnContract.DOW_SUNDAY)) ||
+                            (calDayOfWeek == Calendar.MONDAY && JawnContract.isDayOfWeek(dow, JawnContract.DOW_MONDAY)) ||
+                            (calDayOfWeek == Calendar.TUESDAY && JawnContract.isDayOfWeek(dow, JawnContract.DOW_TUESDAY)) ||
+                            (calDayOfWeek == Calendar.WEDNESDAY && JawnContract.isDayOfWeek(dow, JawnContract.DOW_WEDNESDAY)) ||
+                            (calDayOfWeek == Calendar.THURSDAY && JawnContract.isDayOfWeek(dow, JawnContract.DOW_THURSDAY)) ||
+                            (calDayOfWeek == Calendar.FRIDAY && JawnContract.isDayOfWeek(dow, JawnContract.DOW_FRIDAY)) ||
+                            (calDayOfWeek == Calendar.SATURDAY && JawnContract.isDayOfWeek(dow, JawnContract.DOW_SATURDAY))
+                    ) {
+                if (
+                        provider.equals(JawnContract.WEATHER_API_PROVIDER_JAWNREST) ||
+                                provider.equals(JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND)
+                        ) {
+                    try {
+                        String result = loadJsonFromNetwork(this, notifier, provider, token, zipCode);
+                        Utils.sendNotification(this, result);
+                    } catch (IOException e) {
+                        Log.e("JAWN", getResources().getString(R.string.connection_error), e);
+                        Utils.sendNotification(this, getResources().getString(R.string.connection_error));
+                    }
+                } else {
+                    Utils.sendNotification(this, "Wrong provider set: " + provider + ", could not download weather");
+                }
+            } else {
+                Log.d("JAWN", "Notification not set for " + calDayOfWeek);
+            }
         }
 
         NotificationPublisher.completeWakefulIntent(intent);
     }
 
-    private String loadJsonFromNetwork(Context context, Notifier notifier, String provider, String location) throws IOException {
+    private String loadJsonFromNetwork(Context context, Notifier notifier, String provider, String token, String location) throws IOException {
         WeatherJsonGrabber g = null;
-        if ( provider.equals(JawnContract.WEATHER_API_PROVIDER_JAWNREST) ) g = new JawnRestWeatherJsonGrabber(context, location);
+        if ( provider.equals(JawnContract.WEATHER_API_PROVIDER_JAWNREST) ) g = new JawnRestWeatherJsonGrabber(context, token, location);
         else g = new WundergroundWeatherJsonGrabber(location);
 
         BufferedReader reader = null;

@@ -1,16 +1,41 @@
+/*
+ * Copyright (c) 2017.
+ *
+ * JAWN is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 apply plugin: 'com.android.application'
+apply from: project.property("jawn.signing") + ".gradle";
 
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
-    signingConfigs{
-        key{
+/*    signingConfigs {
+        key {
             keyAlias 'jawn'
             keyPassword 'jawnisnotboring'
             storeFile file('../jawn.jks')
             storePassword 'jawnisnotboring'
         }
+        release {
+            keyAlias 'jawn'
+            keyPassword 'jawnisnotboring'
+            storeFile file('/Users/royrim/keystores/jawn-release.jks')
+            storePassword 'jawnisnotboring'
+        }
     }
+*/
     defaultConfig {
         applicationId "com.miryor.jawn"
         minSdkVersion 15
@@ -18,19 +43,19 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        multiDexEnabled true
+        //multiDexEnabled true
     }
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "JAWN_REST_URL", '"https://jawn-rest.herokuapp.com/hourlyForecast"'
-            signingConfig signingConfigs.key
+            //signingConfig signingConfigs.key
         }
         debug {
-            signingConfig signingConfigs.key
-            // buildConfigField "String", "JAWN_REST_URL", '"https://jawn-rest.herokuapp.com/hourlyForecast"'
-            buildConfigField "String", "JAWN_REST_URL", '"http://10.0.2.2:5000/hourlyForecast"'
+            //signingConfig signingConfigs.key
+            buildConfigField "String", "JAWN_REST_URL", '"https://jawn-rest.herokuapp.com/hourlyForecast"'
+            //buildConfigField "String", "JAWN_REST_URL", '"http://10.0.2.2:5000/hourlyForecast"'
         }
     }
     testOptions {
@@ -46,7 +71,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.0.0'
     compile 'com.android.support:support-v4:25.0.0'
     compile 'com.android.support:design:25.0.0'
-    compile 'com.google.android.gms:play-services:10.0.1'
+    compile 'com.google.android.gms:play-services-auth:10.0.1'
     testCompile 'junit:junit:4.12'
     testCompile 'org.json:json:20140107'
 }
