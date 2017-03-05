@@ -181,12 +181,7 @@ public class WeatherNotificationIntentService extends IntentService {
         else p = new WundergroundWeatherJsonParser( forecast );
 
         List<HourlyForecast> list = p.parseHourlyForecast();
-        builder = new StringBuilder();
-        for ( HourlyForecast hf : list ) {
-            if ( builder.length() > 0 ) builder.append( ", " );
-            JawnContract.formatForecastForNotification(builder, hf);
-        }
-        return builder.toString();
+        return Utils.formatHourlyForecastForNotification(list);
     }
 
 }

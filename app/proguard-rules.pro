@@ -15,3 +15,5 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keep public class com.miryor.jawn.*
+-keep public class com.miryor.jawn.model.*

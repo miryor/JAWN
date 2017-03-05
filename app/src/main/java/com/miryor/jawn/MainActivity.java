@@ -151,6 +151,9 @@ public class MainActivity extends AppCompatActivity {
         else if ( resultCode == Utils.RESULT_DOESNTEXIST ) {
             Toast.makeText(this, "No forecast for this notifier yet", Toast.LENGTH_LONG).show();
         }
+        else if ( resultCode == Utils.RESULT_TOOMANY ) {
+            Toast.makeText(this, "You are only allowed " + JawnContract.MAX_ENTRIES + " notifications", Toast.LENGTH_LONG).show();
+        }
         else {
             Toast.makeText(this, "Cancelled " + resultCode, Toast.LENGTH_LONG).show();
         }

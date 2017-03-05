@@ -22,11 +22,13 @@ import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.provider.BaseColumns;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 
 import com.miryor.jawn.model.HourlyForecast;
 import com.miryor.jawn.model.Notifier;
@@ -45,6 +47,8 @@ public class JawnContract {
 
     public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "JAWN.db";
+
+    public static final long MAX_ENTRIES = 10;
 
     public static final int DOW_SUNDAY = 1;
     public static final int DOW_MONDAY = 2;
@@ -162,8 +166,16 @@ public class JawnContract {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         final SQLiteStatement stmt = db
                 .compileStatement("SELECT MAX(_ID) FROM " + JawnNotifier.TABLE_NAME);
+        long max = (long) stmt.simpleQueryForLong();
+        db.close();
+        return max;
+    }
 
-        return (long) stmt.simpleQueryForLong();
+    public static long getCount(Context context) {
+        JawnNotifierDbHelper dbHelper = new JawnNotifierDbHelper(context);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        long count = DatabaseUtils.queryNumEntries(db, JawnNotifier.TABLE_NAME);
+        return count;
     }
 
     public static long saveNotifier(Context context, Notifier n) {
@@ -193,6 +205,8 @@ public class JawnContract {
         long rowId = db.insert(JawnNotifier.TABLE_NAME, null, values);
 
         db.close();
+
+        Log.d("JAWN", "Added notifier " + rowId);
         return rowId;
     }
 
@@ -209,11 +223,13 @@ public class JawnContract {
         String selection = JawnNotifier._ID + " = ?";
         String[] selectionArgs = { Long.toString( n.getId() ) };
 
-        return db.update(
+        int r = db.update(
                 JawnNotifier.TABLE_NAME,
                 values,
                 selection,
                 selectionArgs);
+        db.close();
+        return r;
     }
 
     public static int updateNotifierForecast( Context context, Notifier n ) {
@@ -236,6 +252,7 @@ public class JawnContract {
     }
 
     public static void deleteNotifier(Context context, long id) {
+        Log.d( "JAWN", "Deleting " + id);
         JawnNotifierDbHelper dbHelper = new JawnNotifierDbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String selection = JawnNotifier._ID + " = ?";
@@ -321,58 +338,6 @@ public class JawnContract {
         c.close();
         db.close();
         return n;
-    }
-
-    public static String getEmoji(String condition, int hour) {
-        String emoji = WeatherJsonParser.EMOJI_QUESTION;
-        for ( int x = 0; x < WeatherJsonParser.STORM_WORDS.length; x++ ) {
-            if ( condition.indexOf( WeatherJsonParser.STORM_WORDS[x] ) >= 0 ) {
-                emoji = WeatherJsonParser.EMOJI_CLOUD_LIGHTNING_RAIN;
-                return emoji;
-            }
-        }
-        for (int x = 0; x < WeatherJsonParser.CLOUDY_WORDS.length; x++) {
-            if (condition.indexOf(WeatherJsonParser.CLOUDY_WORDS[x]) >= 0) {
-                emoji = WeatherJsonParser.EMOJI_SUN_BEHIND_CLOUD;
-                return emoji;
-            }
-        }
-        for ( int x = 0; x < WeatherJsonParser.SNOW_WORDS.length; x++ ) {
-            if ( condition.indexOf( WeatherJsonParser.SNOW_WORDS[x] ) >= 0 ) {
-                emoji = WeatherJsonParser.EMOJI_SNOWMAN;
-                return emoji;
-            }
-        }
-        for (int x = 0; x < WeatherJsonParser.RAIN_WORDS.length; x++) {
-            if (condition.indexOf(WeatherJsonParser.RAIN_WORDS[x]) >= 0) {
-                emoji = WeatherJsonParser.EMOJI_UMBRELLA;
-                return emoji;
-            }
-        }
-        for (int x = 0; x < WeatherJsonParser.SUNNY_WORDS.length; x++) {
-            if (condition.indexOf(WeatherJsonParser.SUNNY_WORDS[x]) >= 0) {
-                emoji = WeatherJsonParser.EMOJI_SUN;
-                return emoji;
-            }
-        }
-        for (int x = 0; x < WeatherJsonParser.CLEAR_WORDS.length; x++) {
-            if (condition.indexOf(WeatherJsonParser.CLEAR_WORDS[x]) >= 0) {
-                if ( hour >= 6 && hour <= 18 ) emoji = WeatherJsonParser.EMOJI_SUN;
-                else emoji = WeatherJsonParser.EMOJI_NIGHTSKY;
-                return emoji;
-            }
-        }
-        return emoji;
-    }
-
-    public static void formatForecastForNotification( StringBuilder builder, HourlyForecast hf ) {
-        String condition = hf.getCondition().toLowerCase();
-        builder.append( getEmoji(condition, hf.getHour()) );
-        builder.append( " " );
-        builder.append( hf.getHour() );
-        builder.append( "H " );
-        builder.append( hf.getFeelsLikeF() );
-        builder.append( "\u00B0" );
     }
 
 }

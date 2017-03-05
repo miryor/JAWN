@@ -103,6 +103,14 @@ public class AddNotifierActivity extends AppCompatActivity {
 
     public void saveNotifier(View view) {
         notifier.setPostalCode( ((TextView) findViewById(R.id.notifier_postalcode) ).getText().toString() );
+
+        long count = JawnContract.getCount(this);
+        if ( count >= JawnContract.MAX_ENTRIES ) {
+            Intent intent = new Intent();
+            setResult(Utils.RESULT_TOOMANY, intent);
+            return;
+        }
+
         long id = JawnContract.saveNotifier( this, notifier );
         notifier.setId(id);
 

@@ -27,9 +27,11 @@ import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
+import com.miryor.jawn.model.HourlyForecast;
 import com.miryor.jawn.model.Notifier;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by royrim on 12/8/16.
@@ -40,12 +42,48 @@ public class Utils {
 
     public static final int RESULT_SAVED = 100;
     public static final int RESULT_CANCELLED = 200;
+    public static final int RESULT_TOOMANY = 2001;
     public static final int RESULT_VIEWED = 101;
     public static final int RESULT_DOESNTEXIST = 102;
     public static final int RESULT_IGNORE = 300;
     public static final int SIGNIN_SUCCESS = 500;
     public static final int SIGNIN_CANCEL = 600;
     public static final int RESULT_ERROR = 700;
+
+    public static String EMOJI_SUN = "\u2600";
+    public static String EMOJI_CRESCENTMOON = "\uD83C\uDF19";
+    public static String EMOJI_NIGHTSKY = "\uD83C\uDF03";
+    public static String EMOJI_CITYDUSK = "\uD83C\uDF06";
+    public static String EMOJI_CLOUD = "\u2601";
+    public static String EMOJI_SUN_BEHIND_CLOUD = "\u26C5";
+    public static String EMOJI_CLOUD_LIGHTNING_RAIN = "\u26C8";
+    public static String EMOJI_SNOWMAN = "\u26CA";
+    public static String EMOJI_UMBRELLA = "\u2614";
+    public static String EMOJI_QUESTION = "\u2753";
+
+    public static String[] SNOW_WORDS = {
+            "hail", "flurries", "freezing", "ice", "sleet", "snow"
+    };
+
+    public static String[] RAIN_WORDS = {
+            "drizzle", "rain"
+    };
+
+    public static String[] CLOUDY_WORDS = {
+            "cloudy", "fog", "haze", "hazy", "mist", "overcast", "partly sunny"
+    };
+
+    public static String[] STORM_WORDS = {
+            "thunderstorm"
+    };
+
+    public static String[] SUNNY_WORDS = {
+            "sunny"
+    };
+
+    public static String[] CLEAR_WORDS = {
+            "clear"
+    };
 
     public static void setNotificationAlarm(Context context, Notifier notifier) {
         Intent notificationIntent = new Intent(context, NotificationPublisher.class);
@@ -100,5 +138,82 @@ public class Utils {
         e.putString(context.getString(R.string.preference_tokenid), tokenId);
         e.commit();
         Log.d("JAWN", "Setting tokenId = " + tokenId);
+    }
+
+
+    public static String getEmoji(String condition, int hour) {
+        String emoji = EMOJI_QUESTION;
+        for (int x = 0; x < STORM_WORDS.length; x++) {
+            if (condition.indexOf(STORM_WORDS[x]) >= 0) {
+                emoji = EMOJI_CLOUD_LIGHTNING_RAIN;
+                return emoji;
+            }
+        }
+        for (int x = 0; x < CLOUDY_WORDS.length; x++) {
+            if (condition.indexOf(CLOUDY_WORDS[x]) >= 0) {
+                emoji = EMOJI_CLOUD;
+                return emoji;
+            }
+        }
+        for (int x = 0; x < SNOW_WORDS.length; x++) {
+            if (condition.indexOf(SNOW_WORDS[x]) >= 0) {
+                emoji = EMOJI_SNOWMAN;
+                return emoji;
+            }
+        }
+        for (int x = 0; x < RAIN_WORDS.length; x++) {
+            if (condition.indexOf(RAIN_WORDS[x]) >= 0) {
+                emoji = EMOJI_UMBRELLA;
+                return emoji;
+            }
+        }
+        for (int x = 0; x < SUNNY_WORDS.length; x++) {
+            if (condition.indexOf(SUNNY_WORDS[x]) >= 0) {
+                emoji = EMOJI_SUN;
+                return emoji;
+            }
+        }
+        for (int x = 0; x < CLEAR_WORDS.length; x++) {
+            if (condition.indexOf(CLEAR_WORDS[x]) >= 0) {
+                if (hour >= 6 && hour <= 18) emoji = EMOJI_SUN;
+                else emoji = EMOJI_NIGHTSKY;
+                return emoji;
+            }
+        }
+        return emoji;
+    }
+
+    public static void formatForecastTimeAndTempNotification( StringBuilder builder, HourlyForecast hf ) {
+        int hour = hf.getHour();
+        if ( hour < 12 ) {
+            builder.append(hour);
+            builder.append("AM");
+        }
+        else if ( hour == 12 ) {
+            builder.append( "12PM" );
+        }
+        else {
+            builder.append( hour - 12 );
+            builder.append( "PM" );
+        }
+        builder.append( " " );
+        builder.append( hf.getFeelsLikeF() );
+        builder.append( "\u00B0" );
+    }
+
+    public static String formatHourlyForecastForNotification( List<HourlyForecast> list ) {
+        StringBuilder builder = new StringBuilder();
+        String previousEmoji = "";
+        for ( HourlyForecast hf : list ) {
+            if ( builder.length() > 0 ) builder.append( "," );
+            String condition = hf.getCondition().toLowerCase();
+            String emoji = getEmoji(condition, hf.getHour());
+            if ( !emoji.equals(previousEmoji) ) {
+                builder.append(emoji);
+            }
+            formatForecastTimeAndTempNotification(builder, hf);
+            previousEmoji = emoji;
+        }
+        return builder.toString();
     }
 }

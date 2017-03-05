@@ -160,24 +160,18 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
                     }
                     else {
                         try {
-                            StringBuilder builder = new StringBuilder();
                             Log.d( "JAWN", "Sending existing forecast to notification " + n.getProvider() );
                             if ( provider.equals(JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND) ) {
                                 WeatherJsonParser parser = new WundergroundWeatherJsonParser(forecast);
                                 List<HourlyForecast> list = parser.parseHourlyForecast();
-                                for (HourlyForecast hf : list) {
-                                    JawnContract.formatForecastForNotification(builder, hf);
-                                }
-                                Utils.sendNotification(context, builder.toString());
+
+                                Utils.sendNotification(context, Utils.formatHourlyForecastForNotification(list));
                                 Toast.makeText(context, "Sent notification", Toast.LENGTH_LONG).show();
                             }
                             else if ( provider.equals(JawnContract.WEATHER_API_PROVIDER_JAWNREST) ) {
                                 WeatherJsonParser parser = new JawnRestWeatherJsonParser(forecast);
                                 List<HourlyForecast> list = parser.parseHourlyForecast();
-                                for (HourlyForecast hf : list) {
-                                    JawnContract.formatForecastForNotification(builder, hf);
-                                }
-                                Utils.sendNotification(context, builder.toString());
+                                Utils.sendNotification(context, Utils.formatHourlyForecastForNotification(list));
                                 Toast.makeText(context, "Sent notification", Toast.LENGTH_LONG).show();
                             }
                         } catch ( Exception e ) {
