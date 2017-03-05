@@ -108,17 +108,18 @@ public class AddNotifierActivity extends AppCompatActivity {
         if ( count >= JawnContract.MAX_ENTRIES ) {
             Intent intent = new Intent();
             setResult(Utils.RESULT_TOOMANY, intent);
-            return;
         }
+        else {
 
-        long id = JawnContract.saveNotifier( this, notifier );
-        notifier.setId(id);
+            long id = JawnContract.saveNotifier(this, notifier);
+            notifier.setId(id);
 
-        Utils.setNotificationAlarm(getApplicationContext(), notifier);
+            Utils.setNotificationAlarm(getApplicationContext(), notifier);
 
-        Intent intent = new Intent();
-        intent.putExtra( Notifier.EXTRA_NAME, notifier );
-        setResult(Utils.RESULT_SAVED, intent);
+            Intent intent = new Intent();
+            intent.putExtra(Notifier.EXTRA_NAME, notifier);
+            setResult(Utils.RESULT_SAVED, intent);
+        }
         finish();
     }
 
