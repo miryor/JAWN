@@ -21,21 +21,6 @@ apply from: project.property("jawn.signing") + ".gradle";
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
-/*    signingConfigs {
-        key {
-            keyAlias 'jawn'
-            keyPassword 'jawnisnotboring'
-            storeFile file('../jawn.jks')
-            storePassword 'jawnisnotboring'
-        }
-        release {
-            keyAlias 'jawn'
-            keyPassword 'jawnisnotboring'
-            storeFile file('/Users/royrim/keystores/jawn-release.jks')
-            storePassword 'jawnisnotboring'
-        }
-    }
-*/
     defaultConfig {
         applicationId "com.miryor.jawn"
         minSdkVersion 15
