@@ -47,6 +47,6 @@
     <string name="disconnect">Disconnect</string>
     <string name="signed_in_fmt">Signed in as: %s</string>
     <string name="loading">Loading…</string>
-    <string name="name_sign_in_activity">SignInActivity</string>
+    <string name="name_sign_in_activity">JAWN</string>
     <string name="server_client_id">553947772785-ri5eps9c8sk2g10mab2jqt66oq3o9d0h.apps.googleusercontent.com</string>
 </resources>

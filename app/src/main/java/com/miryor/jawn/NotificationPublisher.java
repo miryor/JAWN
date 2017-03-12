@@ -89,7 +89,7 @@ public class NotificationPublisher extends WakefulBroadcastReceiver {
     }
 
     private void notifyError(Context context, String error) {
-        Utils.sendNotification(context, error);
+        Utils.sendNotification(context, Utils.RESULT_ERROR, error);
     }
 
 

@@ -165,13 +165,13 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
                                 WeatherJsonParser parser = new WundergroundWeatherJsonParser(forecast);
                                 List<HourlyForecast> list = parser.parseHourlyForecast();
 
-                                Utils.sendNotification(context, Utils.formatHourlyForecastForNotification(list));
+                                Utils.sendNotification(context, n.getId(), Utils.formatHourlyForecastForNotification(list));
                                 Toast.makeText(context, "Sent notification", Toast.LENGTH_LONG).show();
                             }
                             else if ( provider.equals(JawnContract.WEATHER_API_PROVIDER_JAWNREST) ) {
                                 WeatherJsonParser parser = new JawnRestWeatherJsonParser(forecast);
                                 List<HourlyForecast> list = parser.parseHourlyForecast();
-                                Utils.sendNotification(context, Utils.formatHourlyForecastForNotification(list));
+                                Utils.sendNotification(context, n.getId(), Utils.formatHourlyForecastForNotification(list));
                                 Toast.makeText(context, "Sent notification", Toast.LENGTH_LONG).show();
                             }
                         } catch ( Exception e ) {

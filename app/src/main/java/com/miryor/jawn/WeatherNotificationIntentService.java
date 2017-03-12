@@ -107,7 +107,7 @@ public class WeatherNotificationIntentService extends IntentService {
 
     private void handleSignInResult(GoogleSignInResult singInResult, Intent intent) {
         if (!singInResult.isSuccess()) {
-            Utils.sendNotification(this, "You are not signed in.");
+            Utils.sendNotification(this, Utils.RESULT_ERROR, "You are not signed in.");
         }
         else {
             GoogleSignInAccount acct = singInResult.getSignInAccount();
@@ -138,13 +138,13 @@ public class WeatherNotificationIntentService extends IntentService {
                         ) {
                     try {
                         String result = loadJsonFromNetwork(this, notifier, provider, token, zipCode);
-                        Utils.sendNotification(this, result);
+                        Utils.sendNotification(this, notifier.getId(), result);
                     } catch (IOException e) {
                         Log.e("JAWN", getResources().getString(R.string.connection_error), e);
-                        Utils.sendNotification(this, getResources().getString(R.string.connection_error));
+                        Utils.sendNotification(this, Utils.RESULT_ERROR, getResources().getString(R.string.connection_error));
                     }
                 } else {
-                    Utils.sendNotification(this, "Wrong provider set: " + provider + ", could not download weather");
+                    Utils.sendNotification(this, Utils.RESULT_ERROR, "Wrong provider set: " + provider + ", could not download weather");
                 }
             } else {
                 Log.d("JAWN", "Notification not set for " + calDayOfWeek);

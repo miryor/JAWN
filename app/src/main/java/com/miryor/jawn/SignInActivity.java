@@ -58,6 +58,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.miryor.jawn.model.Notifier;
 
 /**
  * Activity to demonstrate basic retrieval of the Google user's ID, email address, and basic
@@ -73,16 +74,11 @@ public class SignInActivity extends AppCompatActivity implements
     private GoogleApiClient mGoogleApiClient;
     private TextView mStatusTextView;
     private ProgressDialog mProgressDialog;
-    private Boolean test = Boolean.FALSE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signin);
-
-        Intent intent = getIntent();
-        test = intent.getBooleanExtra("test", Boolean.FALSE);
-        setResult(Utils.SIGNIN_CANCEL);
 
         // Views
         mStatusTextView = (TextView) findViewById(R.id.status);
@@ -162,16 +158,8 @@ public class SignInActivity extends AppCompatActivity implements
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            Utils.setTokenId(getApplicationContext(), acct.getIdToken());
             mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             updateUI(true);
-            if ( test ) {
-                test = Boolean.FALSE;
-            }
-            else {
-                setResult(Utils.SIGNIN_SUCCESS);
-                finish();
-            }
         } else {
             // Signed out, show unauthenticated UI.
             updateUI(false);
@@ -241,11 +229,13 @@ public class SignInActivity extends AppCompatActivity implements
         if (signedIn) {
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+            findViewById(R.id.notifications_button).setVisibility(View.VISIBLE);
         } else {
             mStatusTextView.setText(R.string.signed_out);
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
+            findViewById(R.id.notifications_button).setVisibility(View.GONE);
         }
     }
 
@@ -263,4 +253,10 @@ public class SignInActivity extends AppCompatActivity implements
                 break;
         }
     }
+
+    public void viewNotifications(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
 }

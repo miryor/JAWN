@@ -33,16 +33,16 @@
         android:debuggable="true">
         <!-- TODO: REMEMBER TO REMOVE android:debuggable -->
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".SignInActivity"
             android:label="@string/name_sign_in_activity"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".AddNotifierActivity" />
         <activity

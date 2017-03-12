@@ -104,14 +104,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        startActivityForResult( new Intent(this, SignInActivity.class), Utils.SIGNIN_SUCCESS );
+        // startActivityForResult( new Intent(this, SignInActivity.class), Utils.SIGNIN_SUCCESS );
+
+        displayList();
     }
 
-    public void checkSignin(View view) {
+    /*public void checkSignin(View view) {
         Intent intent = new Intent(this, SignInActivity.class);
         intent.putExtra( "test", Boolean.TRUE);
         startActivityForResult( intent, Utils.SIGNIN_SUCCESS );
-    }
+    }*/
 
     public void displayList() {
         notifierList = JawnContract.listNotifiers(this);
@@ -133,13 +135,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d("JAWN", "onActivityResult " + resultCode );
         // Toast.makeText(this, "toast " + resultCode, Toast.LENGTH_LONG).show();
         if ( resultCode == Utils.RESULT_IGNORE ) {
-        }
-        else if ( resultCode == Utils.SIGNIN_CANCEL ) {
-            startActivityForResult( new Intent(this, SignInActivity.class), Utils.SIGNIN_SUCCESS );
-        }
-        else if ( resultCode == Utils.SIGNIN_SUCCESS ) {
-            // Signed in successfully, show authenticated UI.
-            displayList();
         }
         else if ( resultCode == Utils.RESULT_SAVED ) {
             adapter.clear();

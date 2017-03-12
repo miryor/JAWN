@@ -108,7 +108,7 @@ public class Utils {
 
     }
 
-    public static void sendNotification(Context context, String result) {
+    public static void sendNotification(Context context, long notificationId, String result) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context);
         mBuilder
@@ -116,30 +116,14 @@ public class Utils {
                 .setContentTitle("Weather Notification")
                 .setContentText(result);
 
-        int notificationId = NotificationId.getId(context);
         Log.d( "JAWN", "Sending notification with " + notificationId + ", " + result );
         // Gets an instance of the NotificationManager service
         NotificationManager mNotifyMgr =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotifyMgr.cancel((int)notificationId);
         // Builds the notification and issues it.
-        mNotifyMgr.notify( notificationId, mBuilder.build());
+        mNotifyMgr.notify( (int)notificationId, mBuilder.build());
     }
-
-    public static String getTokenId(Context context) {
-        SharedPreferences p = context.getSharedPreferences( context.getString(R.string.preference_jawnnotifier), Context.MODE_PRIVATE );
-        String tokenId = p.getString(context.getString(R.string.preference_tokenid), "");
-        Log.d("JAWN", "Getting tokenId = " + tokenId);
-        return tokenId;
-    }
-
-    public static void setTokenId(Context context, String tokenId) {
-        SharedPreferences p = context.getSharedPreferences( context.getString(R.string.preference_jawnnotifier), Context.MODE_PRIVATE );
-        SharedPreferences.Editor e = p.edit();
-        e.putString(context.getString(R.string.preference_tokenid), tokenId);
-        e.commit();
-        Log.d("JAWN", "Setting tokenId = " + tokenId);
-    }
-
 
     public static String getEmoji(String condition, int hour) {
         String emoji = EMOJI_QUESTION;
