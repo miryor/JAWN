@@ -47,8 +47,8 @@ public class JawnRestWeatherJsonGrabber implements WeatherJsonGrabber {
         Log.d("JAWN", "Getting weather from: " + URL + "?location=" + location + "&version=" + VERSION );
         URL url = new URL(URL + "?token=" + token + "&location=" + location + "&version=" + VERSION );
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(30000 /* milliseconds */);
-        conn.setConnectTimeout(60000 /* milliseconds */);
+        conn.setReadTimeout(300000 /* milliseconds */); // first has to google sign in check then get weather
+        conn.setConnectTimeout(300000 /* milliseconds */); // five minutes, assume heroku free startup time is slow
         conn.setRequestMethod("GET");
         conn.setDoInput(true);
         conn.connect();
