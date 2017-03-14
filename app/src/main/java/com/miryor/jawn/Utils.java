@@ -113,7 +113,7 @@ public class Utils {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context);
         mBuilder
-                .setSmallIcon(R.drawable.ic_wb_sunny_black_24dp)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("JAWN")
                 .setContentText(result);
 
@@ -130,8 +130,8 @@ public class Utils {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context);
         mBuilder
-                .setSmallIcon(R.drawable.ic_wb_sunny_black_24dp)
-                .setContentTitle("JAWN " + result.getEmojiSummary())
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(result.getEmojiSummary())
                 .setContentText(result.getHourlyForecastFormatted());
 
         Log.d( "JAWN", "Sending notification with " + notificationId + ", " + result );
