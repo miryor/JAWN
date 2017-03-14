@@ -52,6 +52,8 @@ public class WeatherNotificationIntentService extends IntentService {
         super( "WeatherNoticationIntentService" );
     }
 
+    // TODO: Need to figure out DST
+
     @Override
     protected void onHandleIntent(Intent intent) {
 
