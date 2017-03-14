@@ -57,7 +57,7 @@ public class Utils {
     public static String EMOJI_CLOUD = "\u2601";
     public static String EMOJI_SUN_BEHIND_CLOUD = "\u26C5";
     public static String EMOJI_CLOUD_LIGHTNING_RAIN = "\u26C8";
-    public static String EMOJI_SNOWMAN = "\u26CA";
+    public static String EMOJI_SNOWMAN = "\u26C4";
     public static String EMOJI_UMBRELLA = "\u2614";
     public static String EMOJI_QUESTION = "\u2753";
 
