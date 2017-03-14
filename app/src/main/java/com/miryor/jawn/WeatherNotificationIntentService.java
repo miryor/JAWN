@@ -34,6 +34,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.miryor.jawn.model.HourlyForecast;
+import com.miryor.jawn.model.HourlyForecastFormatted;
 import com.miryor.jawn.model.Notifier;
 
 import java.io.BufferedReader;
@@ -139,7 +140,7 @@ public class WeatherNotificationIntentService extends IntentService {
                                 provider.equals(JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND)
                         ) {
                     try {
-                        String result = loadJsonFromNetwork(this, notifier, provider, token, zipCode);
+                        HourlyForecastFormatted result = loadJsonFromNetwork(this, notifier, provider, token, zipCode);
                         Utils.sendNotification(this, notifier.getId(), result);
                     } catch (IOException e) {
                         Log.e("JAWN", getResources().getString(R.string.connection_error), e);
@@ -156,7 +157,7 @@ public class WeatherNotificationIntentService extends IntentService {
         NotificationPublisher.completeWakefulIntent(intent);
     }
 
-    private String loadJsonFromNetwork(Context context, Notifier notifier, String provider, String token, String location) throws IOException {
+    private HourlyForecastFormatted loadJsonFromNetwork(Context context, Notifier notifier, String provider, String token, String location) throws IOException {
         WeatherJsonGrabber g = null;
         if ( provider.equals(JawnContract.WEATHER_API_PROVIDER_JAWNREST) ) g = new JawnRestWeatherJsonGrabber(context, token, location);
         else g = new WundergroundWeatherJsonGrabber(location);

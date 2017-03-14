@@ -28,6 +28,7 @@ import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import com.miryor.jawn.model.HourlyForecast;
+import com.miryor.jawn.model.HourlyForecastFormatted;
 import com.miryor.jawn.model.Notifier;
 
 import java.util.Calendar;
@@ -113,8 +114,25 @@ public class Utils {
                 new NotificationCompat.Builder(context);
         mBuilder
                 .setSmallIcon(R.drawable.ic_wb_sunny_black_24dp)
-                .setContentTitle("Weather Notification")
+                .setContentTitle("JAWN")
                 .setContentText(result);
+
+        Log.d( "JAWN", "Sending notification with " + notificationId + ", " + result );
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotifyMgr.cancel((int)notificationId);
+        // Builds the notification and issues it.
+        mNotifyMgr.notify( (int)notificationId, mBuilder.build());
+    }
+
+    public static void sendNotification(Context context, long notificationId, HourlyForecastFormatted result) {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context);
+        mBuilder
+                .setSmallIcon(R.drawable.ic_wb_sunny_black_24dp)
+                .setContentTitle("JAWN " + result.getEmojiSummary())
+                .setContentText(result.getHourlyForecastFormatted());
 
         Log.d( "JAWN", "Sending notification with " + notificationId + ", " + result );
         // Gets an instance of the NotificationManager service
@@ -185,8 +203,9 @@ public class Utils {
         builder.append( "\u00B0" );
     }
 
-    public static String formatHourlyForecastForNotification( List<HourlyForecast> list ) {
+    public static HourlyForecastFormatted formatHourlyForecastForNotification(List<HourlyForecast> list ) {
         StringBuilder builder = new StringBuilder();
+        StringBuilder emojiBuilder = new StringBuilder();
         String previousEmoji = "";
         for ( HourlyForecast hf : list ) {
             if ( builder.length() > 0 ) builder.append( "," );
@@ -194,10 +213,11 @@ public class Utils {
             String emoji = getEmoji(condition, hf.getHour());
             if ( !emoji.equals(previousEmoji) ) {
                 builder.append(emoji);
+                emojiBuilder.append(emoji);
             }
             formatForecastTimeAndTempNotification(builder, hf);
             previousEmoji = emoji;
         }
-        return builder.toString();
+        return new HourlyForecastFormatted(emojiBuilder.toString(), builder.toString());
     }
 }

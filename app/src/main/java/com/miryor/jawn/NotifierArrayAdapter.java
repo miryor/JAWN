@@ -171,6 +171,7 @@ public class NotifierArrayAdapter extends ArrayAdapter<Notifier> {
                             else if ( provider.equals(JawnContract.WEATHER_API_PROVIDER_JAWNREST) ) {
                                 WeatherJsonParser parser = new JawnRestWeatherJsonParser(forecast);
                                 List<HourlyForecast> list = parser.parseHourlyForecast();
+
                                 Utils.sendNotification(context, n.getId(), Utils.formatHourlyForecastForNotification(list));
                                 Toast.makeText(context, "Sent notification", Toast.LENGTH_LONG).show();
                             }
