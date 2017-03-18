@@ -213,7 +213,7 @@ public class Utils {
             String emoji = getEmoji(condition, hf.getHour());
             if ( !emoji.equals(previousEmoji) ) {
                 builder.append(emoji);
-                emojiBuilder.append(emoji);
+                if (emojiBuilder.indexOf(emoji) == -1) emojiBuilder.append(emoji);
             }
             formatForecastTimeAndTempNotification(builder, hf);
             previousEmoji = emoji;
