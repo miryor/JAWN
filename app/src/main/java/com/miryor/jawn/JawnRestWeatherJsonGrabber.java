@@ -45,13 +45,20 @@ public class JawnRestWeatherJsonGrabber implements WeatherJsonGrabber {
 
     public InputStream getWeatherJsonInputStream() throws IOException {
         Log.d("JAWN", "Getting weather from: " + URL + "?location=" + location + "&version=" + VERSION );
-        URL url = new URL(URL + "?token=" + token + "&location=" + location + "&version=" + VERSION );
+        URL url = new URL(URL);
+        byte[] postDataBytes = ( "token=" + token + "&location=" + location + "&version=" + VERSION ).getBytes("UTF-8");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setDoOutput(true);
         conn.setReadTimeout(300000 /* milliseconds */); // first has to google sign in check then get weather
         conn.setConnectTimeout(300000 /* milliseconds */); // five minutes, assume heroku free startup time is slow
-        conn.setRequestMethod("GET");
-        conn.setDoInput(true);
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
+        conn.getOutputStream().write(postDataBytes);
         conn.connect();
+        int responseCode = conn.getResponseCode();
+        if ( 403 == responseCode ) throw new InvalidTokenException( "JAWN-REST decided token was invalid " + token );
+        if ( 200 != responseCode ) throw new IOException( "Invalid response code " + responseCode );
         return conn.getInputStream();
     }
 

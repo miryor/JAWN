@@ -49,6 +49,8 @@ import java.util.List;
 
 public class WeatherNotificationIntentService extends IntentService {
 
+    private static final int MAX_ATTEMPTS = 3;
+
     public WeatherNotificationIntentService() {
         super( "WeatherNoticationIntentService" );
     }
@@ -139,12 +141,27 @@ public class WeatherNotificationIntentService extends IntentService {
                         provider.equals(JawnContract.WEATHER_API_PROVIDER_JAWNREST) ||
                                 provider.equals(JawnContract.WEATHER_API_PROVIDER_WUNDERGROUND)
                         ) {
-                    try {
-                        HourlyForecastFormatted result = loadJsonFromNetwork(this, notifier, provider, token, zipCode);
-                        Utils.sendNotification(this, notifier.getId(), result);
-                    } catch (IOException e) {
-                        Log.e("JAWN", getResources().getString(R.string.connection_error), e);
-                        Utils.sendNotification(this, Utils.RESULT_ERROR, getResources().getString(R.string.connection_error));
+                    int attempts = 0;
+                    while ( attempts < MAX_ATTEMPTS ) {
+                        try {
+                            HourlyForecastFormatted result = loadJsonFromNetwork(this, notifier, provider, token, zipCode);
+                            Utils.sendNotification(this, notifier.getId(), result);
+                            // we got the weather, no further attempts needed
+                            break;
+                        }
+                        catch (InvalidTokenException e) {
+                            Log.e("JAWN", getResources().getString(R.string.connection_error), e);
+                            Utils.sendNotification(this, Utils.RESULT_ERROR, getResources().getString(R.string.connection_error) + ", invalid token");
+                            // token is invalid, no further attempts needed
+                            break;
+                        }
+                        catch (IOException e) {
+                            Log.e("JAWN", getResources().getString(R.string.connection_error), e);
+                            // we got some weird exception, sleep for a minute*attempts
+                            try { Thread.sleep( (60000 * attempts) ); } catch ( InterruptedException e2 ) { break; }
+                        }
+                        attempts++;
+                        if ( attempts >= MAX_ATTEMPTS ) Utils.sendNotification(this, Utils.RESULT_ERROR, getResources().getString(R.string.connection_error));
                     }
                 } else {
                     Utils.sendNotification(this, Utils.RESULT_ERROR, "Wrong provider set: " + provider + ", could not download weather");
