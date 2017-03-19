@@ -49,8 +49,8 @@ public class JawnRestWeatherJsonGrabber implements WeatherJsonGrabber {
         byte[] postDataBytes = ( "token=" + token + "&location=" + location + "&version=" + VERSION ).getBytes("UTF-8");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setDoOutput(true);
-        conn.setReadTimeout(300000 /* milliseconds */); // first has to google sign in check then get weather
-        conn.setConnectTimeout(300000 /* milliseconds */); // five minutes, assume heroku free startup time is slow
+        conn.setReadTimeout(15000 /* milliseconds */); // first has to google sign in check then get weather
+        conn.setConnectTimeout(15000 /* milliseconds */); // 15 seconds is safe according to heroku, heroku times out at 30 seconds
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));

@@ -49,7 +49,7 @@ import java.util.List;
 
 public class WeatherNotificationIntentService extends IntentService {
 
-    private static final int MAX_ATTEMPTS = 3;
+    private static final int MAX_ATTEMPTS = 5;
 
     public WeatherNotificationIntentService() {
         super( "WeatherNoticationIntentService" );
