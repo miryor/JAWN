@@ -215,7 +215,8 @@ public class NotificationPublisher extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Bundle hackBundle = intent.getBundleExtra("hackBundle");
         Notifier notifier = hackBundle.getParcelable(Notifier.EXTRA_NAME);
-        //Notifier notifier = intent.getParcelableExtra( Notifier.EXTRA_NAME );        Log.d( "JAWN", "Received alarm for " + notifier.getPostalCode() );
+        //Notifier notifier = intent.getParcelableExtra( Notifier.EXTRA_NAME );        
+        Log.d( "JAWN", "Received alarm for " + notifier.getPostalCode() );
         Intent service = new Intent(context, WeatherNotificationIntentService.class);
         service.putExtra( Notifier.EXTRA_NAME, notifier );
         startWakefulService(context, service);
@@ -244,12 +245,18 @@ public class WeatherNotificationIntentService extends IntentService {
 
         Log.d( "JAWN", "onHandleIntent " + intent.getClass().getName() );
 
-        // [START configure_signin]        // Configure sign-in to request the user's ID, email address, and basic        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        // [START configure_signin]        
+        // Configure sign-in to request the user's ID, email address, and basic        
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.        
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestIdToken(getString(R.string.server_client_id))
                 .build();
         // [END configure_signin]
-        // [START build_client]        // Build a GoogleApiClient with access to the Google Sign-In API and the        // options specified by gso.        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+        // [START build_client]        
+        // Build a GoogleApiClient with access to the Google Sign-In API and the        
+        // options specified by gso.        
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
         // [END build_client]
@@ -267,8 +274,6 @@ public class WeatherNotificationIntentService extends IntentService {
         } finally {
             mGoogleApiClient.disconnect();
         }
-
-        /*OptionalPendingResult opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);        if (!opr.isDone()) {            opr.setResultCallback(new ResultCallback() {                                      @Override                                      public void onResult(@NonNull GoogleSignInResult googleSignInResult) {                                          handleSignInResult(googleSignInResult, intent);                                      }                                  }            );        }        else {            handleSignInResult(opr.get(), intent);        }*/
     }
 
     private void handleSignInResult(GoogleSignInResult singInResult, Intent intent) {
@@ -307,16 +312,19 @@ public class WeatherNotificationIntentService extends IntentService {
                         try {
                             HourlyForecastFormatted result = loadJsonFromNetwork(this, notifier, provider, token, zipCode);
                             Utils.sendNotification(this, notifier.getId(), result);
-                            // we got the weather, no further attempts needed                            break;
+                            // we got the weather, no further attempts needed                            
+                            break;
                         }
                         catch (InvalidTokenException e) {
                             Log.e("JAWN", getResources().getString(R.string.connection_error), e);
                             Utils.sendNotification(this, Utils.RESULT_ERROR, getResources().getString(R.string.connection_error) + ", invalid token");
-                            // token is invalid, no further attempts needed                            break;
+                            // token is invalid, no further attempts needed                            
+                            break;
                         }
                         catch (IOException e) {
                             Log.e("JAWN", getResources().getString(R.string.connection_error), e);
-                            // we got some weird exception, sleep for a minute*attempts                            try { Thread.sleep( (60000 * attempts) ); } catch ( InterruptedException e2 ) { break; }
+                            // we got some weird exception, sleep for a minute*attempts                            
+                            try { Thread.sleep( (60000 * attempts) ); } catch ( InterruptedException e2 ) { break; }
                         }
                         attempts++;
                         if ( attempts >= MAX_ATTEMPTS ) Utils.sendNotification(this, Utils.RESULT_ERROR, getResources().getString(R.string.connection_error));
