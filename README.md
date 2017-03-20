@@ -6,7 +6,7 @@ I wanted weather notifications on my Fitbit Blaze. Since I could not find an app
 
 The Fitbit Blaze is not a true "smartwatch", at least not in the way same way a Pebble, iWatch or Android watch is a "smartwatch". There is no "app store" to provide a bevy of customizable apps. Instead you essentially have a fatter LED Fitbit with a few nice extras. If there is a feature you would like from the Blaze, such as a Weather Forecast, you pretty much have to hope that the Fitbit company decides to add it.
 
-Personally I wanted to know what the weather was going to be when I go to work and when I leave work and for convenience I wanted it to be on my Blaze. I also know that other Blaze owners would like convenience as well:
+Personally I wanted to know what the weather was going to be when I go to work and when I leave work and for convenience I wanted it to be on my Blaze. I also know that other Blaze owners would like this convenience as well:
 
 https://community.fitbit.com/t5/Feature-Suggestions/Blaze-needs-weather-app/idi-p/1222066?nobounce
 
@@ -34,7 +34,7 @@ So we have a lot of emojis but will they all work on the Blaze?
 
 ## A Quick Test
 
-I already knew that the U.S. version of the Blaze did not display international text, so I was not sure if emojis would work.
+I already knew that the U.S. version of the Blaze did not display international text so I was not sure what Unicode standards were followed including the emoji standards.
 
 To check I built a simple app to display some emojis. Here is a screenshot of it with some weather emojis. Next to it are how the emojis appeared on the Blaze when sent as notifications.
 
