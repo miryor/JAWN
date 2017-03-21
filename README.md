@@ -52,7 +52,7 @@ I have the app setup like an alarm clock. You tell the app your location and wha
 
 ![JAWN](http://i.imgur.com/X217DNu.png "introducing JAWN")
 
-As you can see the weather forecast at 12pm starts off with rain but should clear up by 10pm.
+As you can see the weather forecast at 12pm starts off with rain but should clear up by 10pm. I should also make it clear that JAWN is not meant to replace your favorite weather app with its fancy rain animations and whatnot, its only job is to send weather notifications.
 
 ## Providing Weather Data
 
