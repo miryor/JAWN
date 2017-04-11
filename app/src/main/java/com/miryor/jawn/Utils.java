@@ -121,9 +121,10 @@ public class Utils {
         // Gets an instance of the NotificationManager service
         NotificationManager mNotifyMgr =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotifyMgr.cancel((int)notificationId);
+        // mNotifyMgr.cancel((int)notificationId);
         // Builds the notification and issues it.
-        mNotifyMgr.notify( (int)notificationId, mBuilder.build());
+        int id = (int)System.currentTimeMillis();
+        mNotifyMgr.notify( "com.miryor.jawn", id, mBuilder.build());
     }
 
     public static void sendNotification(Context context, long notificationId, HourlyForecastFormatted result) {
@@ -138,9 +139,10 @@ public class Utils {
         // Gets an instance of the NotificationManager service
         NotificationManager mNotifyMgr =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotifyMgr.cancel((int)notificationId);
+        // mNotifyMgr.cancel((int)notificationId);
         // Builds the notification and issues it.
-        mNotifyMgr.notify( (int)notificationId, mBuilder.build());
+        int id = (int)System.currentTimeMillis();
+        mNotifyMgr.notify( "com.miryor.jawn", id, mBuilder.build());
     }
 
     public static String getEmoji(String condition, int hour) {
