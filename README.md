@@ -6,7 +6,7 @@ I wanted weather notifications on my Fitbit Blaze. Since I could not find an app
 
 The Fitbit Blaze is not a true "smartwatch", at least not in the way same way a Pebble, iWatch or Android watch is a "smartwatch". There is no "app store" to provide a bevy of customizable apps. Instead you essentially have a fatter LED Fitbit with a few nice extras. If there is a feature you would like from the Blaze, such as a Weather Forecast, you pretty much have to hope that the Fitbit company decides to add it.
 
-Personally I wanted to know what the weather was going to be when I go to work and when I leave work and for convenience I wanted it to be on my Blaze. I also know that other Blaze owners would like convenience as well:
+Personally I wanted to know what the weather was going to be when I go to work and when I leave work and for convenience I wanted it to be on my Blaze. I also know that other Blaze owners would like this convenience as well:
 
 https://community.fitbit.com/t5/Feature-Suggestions/Blaze-needs-weather-app/idi-p/1222066?nobounce
 
@@ -34,7 +34,7 @@ So we have a lot of emojis but will they all work on the Blaze?
 
 ## A Quick Test
 
-I already knew that the U.S. version of the Blaze did not display international text, so I was not sure if emojis would work.
+I already knew that the U.S. version of the Blaze did not display international text so I was not sure what Unicode standards were followed including the emoji standards.
 
 To check I built a simple app to display some emojis. Here is a screenshot of it with some weather emojis. Next to it are how the emojis appeared on the Blaze when sent as notifications.
 
@@ -52,7 +52,7 @@ I have the app setup like an alarm clock. You tell the app your location and wha
 
 ![JAWN](http://i.imgur.com/X217DNu.png "introducing JAWN")
 
-As you can see the weather forecast at 12pm starts off with rain but should clear up by 10pm.
+As you can see the weather forecast at 12pm starts off with rain but should clear up by 10pm. I should also make it clear that JAWN is not meant to replace your favorite weather app with its fancy rain animations and whatnot, its only job is to send weather notifications.
 
 ## Providing Weather Data
 
@@ -215,7 +215,8 @@ public class NotificationPublisher extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Bundle hackBundle = intent.getBundleExtra("hackBundle");
         Notifier notifier = hackBundle.getParcelable(Notifier.EXTRA_NAME);
-        //Notifier notifier = intent.getParcelableExtra( Notifier.EXTRA_NAME );        Log.d( "JAWN", "Received alarm for " + notifier.getPostalCode() );
+        //Notifier notifier = intent.getParcelableExtra( Notifier.EXTRA_NAME );        
+        Log.d( "JAWN", "Received alarm for " + notifier.getPostalCode() );
         Intent service = new Intent(context, WeatherNotificationIntentService.class);
         service.putExtra( Notifier.EXTRA_NAME, notifier );
         startWakefulService(context, service);
@@ -244,12 +245,18 @@ public class WeatherNotificationIntentService extends IntentService {
 
         Log.d( "JAWN", "onHandleIntent " + intent.getClass().getName() );
 
-        // [START configure_signin]        // Configure sign-in to request the user's ID, email address, and basic        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        // [START configure_signin]        
+        // Configure sign-in to request the user's ID, email address, and basic        
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.        
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestIdToken(getString(R.string.server_client_id))
                 .build();
         // [END configure_signin]
-        // [START build_client]        // Build a GoogleApiClient with access to the Google Sign-In API and the        // options specified by gso.        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+        // [START build_client]        
+        // Build a GoogleApiClient with access to the Google Sign-In API and the        
+        // options specified by gso.        
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
         // [END build_client]
@@ -267,8 +274,6 @@ public class WeatherNotificationIntentService extends IntentService {
         } finally {
             mGoogleApiClient.disconnect();
         }
-
-        /*OptionalPendingResult opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);        if (!opr.isDone()) {            opr.setResultCallback(new ResultCallback() {                                      @Override                                      public void onResult(@NonNull GoogleSignInResult googleSignInResult) {                                          handleSignInResult(googleSignInResult, intent);                                      }                                  }            );        }        else {            handleSignInResult(opr.get(), intent);        }*/
     }
 
     private void handleSignInResult(GoogleSignInResult singInResult, Intent intent) {
@@ -307,16 +312,19 @@ public class WeatherNotificationIntentService extends IntentService {
                         try {
                             HourlyForecastFormatted result = loadJsonFromNetwork(this, notifier, provider, token, zipCode);
                             Utils.sendNotification(this, notifier.getId(), result);
-                            // we got the weather, no further attempts needed                            break;
+                            // we got the weather, no further attempts needed                            
+                            break;
                         }
                         catch (InvalidTokenException e) {
                             Log.e("JAWN", getResources().getString(R.string.connection_error), e);
                             Utils.sendNotification(this, Utils.RESULT_ERROR, getResources().getString(R.string.connection_error) + ", invalid token");
-                            // token is invalid, no further attempts needed                            break;
+                            // token is invalid, no further attempts needed                            
+                            break;
                         }
                         catch (IOException e) {
                             Log.e("JAWN", getResources().getString(R.string.connection_error), e);
-                            // we got some weird exception, sleep for a minute*attempts                            try { Thread.sleep( (60000 * attempts) ); } catch ( InterruptedException e2 ) { break; }
+                            // we got some weird exception, sleep for a minute*attempts                            
+                            try { Thread.sleep( (60000 * attempts) ); } catch ( InterruptedException e2 ) { break; }
                         }
                         attempts++;
                         if ( attempts >= MAX_ATTEMPTS ) Utils.sendNotification(this, Utils.RESULT_ERROR, getResources().getString(R.string.connection_error));
