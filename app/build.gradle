@@ -26,7 +26,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
-        versionName "1.0"
+        versionName "1.0-alpha"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         //multiDexEnabled true
     }
@@ -36,11 +36,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "JAWN_REST_URL", '"https://jawn-rest.herokuapp.com/hourlyForecast"'
             //signingConfig signingConfigs.key
+            buildConfigField "int", "JAWN_MAX_NOTIFICATIONS", "3"
         }
         debug {
             //signingConfig signingConfigs.key
             //buildConfigField "String", "JAWN_REST_URL", '"https://jawn-rest.herokuapp.com/hourlyForecast"'
             buildConfigField "String", "JAWN_REST_URL", '"http://10.0.2.2:5000/hourlyForecast"'
+            buildConfigField "int", "JAWN_MAX_NOTIFICATIONS", "3"
         }
     }
     testOptions {

@@ -48,7 +48,7 @@ public class JawnContract {
     public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "JAWN.db";
 
-    public static final long MAX_ENTRIES = 10;
+    public static final long MAX_ENTRIES = BuildConfig.JAWN_MAX_NOTIFICATIONS;
 
     public static final int DOW_SUNDAY = 1;
     public static final int DOW_MONDAY = 2;

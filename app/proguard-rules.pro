@@ -17,3 +17,8 @@
 #}
 -keep public class com.miryor.jawn.*
 -keep public class com.miryor.jawn.model.*
+
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+}
